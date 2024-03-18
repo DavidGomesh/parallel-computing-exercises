@@ -1,9 +1,14 @@
 #include <stdio.h>
 
 #include "adt/list/List.h"
+
 #include "adt/graph/Graph.h"
 #include "adt/graph/Vertex.h"
 #include "adt/graph/Edge.h"
+
+// #include "travelling-salesman/Field.h"
+// #include "travelling-salesman/Ant.h"
+
 
 typedef struct person_type {
     char name[31];
@@ -17,11 +22,13 @@ void printPerson(Person* person) {
 void testList();
 void testGraph();
 void testGetEdgesByVertex();
+void testConnectAllVertices();
 
 int main() {
     // testList();
     // testGraph();
-    testGetEdgesByVertex();
+    // testGetEdgesByVertex();
+    testConnectAllVertices();
     return 0;
 }
 
@@ -107,6 +114,35 @@ void testGetEdgesByVertex() {
     List* edges = getEdgesByVertex(graph, v5);
     for (unsigned i=0; i<sizeList(edges); i++) {
         Edge* edge = (Edge*) getListData(edges, i);
+        printf("F: %s\tS: %s\tW: %.2f\n", (char*) edge->first->data, (char*) edge->second->data, edge->weight);
+    }
+}
+
+void testConnectAllVertices() {
+    Vertex* v1 = newVertex("City01");
+    Vertex* v2 = newVertex("City02");
+    Vertex* v3 = newVertex("City03");
+    Vertex* v4 = newVertex("City04");
+    Vertex* v5 = newVertex("City05");
+
+    Graph* graph = newGraph();
+
+    addVertex(graph, v1);
+    addVertex(graph, v2);
+    addVertex(graph, v3);
+    addVertex(graph, v4);
+    addVertex(graph, v5);
+
+    connectAllVertices(graph, (float[]){
+        22, 50, 48, 29,
+        30, 34, 32,
+        22, 23,
+        35
+    });
+
+    printf("PRINT EDGES\n");
+    for (unsigned i=0; i<sizeList(graph->edges); i++) {
+        Edge* edge = (Edge*) getListData(graph->edges, i);
         printf("F: %s\tS: %s\tW: %.2f\n", (char*) edge->first->data, (char*) edge->second->data, edge->weight);
     }
 }
