@@ -25,4 +25,24 @@ void addEdge(Graph* graph, Edge* edge) {
     appendList(graph->edges, edge);
 }
 
+List* getEdgesByVertex(Graph* graph, Vertex* vertex) {
+    if (graph == NULL || vertex == NULL) {
+        return NULL;
+    }
+
+    List* edges = newList();
+    if (edges == NULL) {
+        return NULL;
+    }
+
+    for (uint i=0; i<sizeList(graph->edges); i++) {
+        Edge* edge = (Edge*) getListData(graph->edges, i);
+        if (edge->first == vertex || edge->second == vertex) {
+            appendList(edges, edge);
+        }
+    }
+
+    return edges;
+}
+
 #endif // GRAPH_C_INCLUDED

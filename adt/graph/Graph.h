@@ -15,4 +15,6 @@ Graph* newGraph();
 void addVertex(Graph* graph, Vertex* vertex);
 void addEdge(Graph* graph, Edge* edge);
 
+List* getEdgesByVertex(Graph* graph, Vertex* vertex);
+
 #endif // GRAPH_H_INCLUDED

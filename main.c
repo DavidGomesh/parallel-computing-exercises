@@ -16,10 +16,12 @@ void printPerson(Person* person) {
 
 void testList();
 void testGraph();
+void testGetEdgesByVertex();
 
 int main() {
-    testList();
-    testGraph();
+    // testList();
+    // testGraph();
+    testGetEdgesByVertex();
     return 0;
 }
 
@@ -71,6 +73,40 @@ void testGraph() {
     printf("PRINT EDGES\n");
     for (unsigned i=0; i<sizeList(graph->edges); i++) {
         Edge* edge = (Edge*) getListData(graph->edges, i);
+        printf("F: %s\tS: %s\tW: %.2f\n", (char*) edge->first->data, (char*) edge->second->data, edge->weight);
+    }
+}
+
+void testGetEdgesByVertex() {
+    Vertex* v1 = newVertex("City01");
+    Vertex* v2 = newVertex("City02");
+    Vertex* v3 = newVertex("City03");
+    Vertex* v4 = newVertex("City04");
+    Vertex* v5 = newVertex("City05");
+
+    Edge* e1 = newEdge(v1, v2, 25.0);
+    Edge* e2 = newEdge(v1, v3, 26.0);
+    Edge* e3 = newEdge(v2, v3, 27.0);
+    Edge* e4 = newEdge(v2, v4, 27.0);
+    Edge* e5 = newEdge(v2, v5, 27.0);
+
+    Graph* graph = newGraph();
+    
+    addVertex(graph, v1);
+    addVertex(graph, v2);
+    addVertex(graph, v3);
+    addVertex(graph, v4);
+    addVertex(graph, v5);
+
+    addEdge(graph, e1);
+    addEdge(graph, e2);
+    addEdge(graph, e3);
+    addEdge(graph, e4);
+    addEdge(graph, e5);
+
+    List* edges = getEdgesByVertex(graph, v5);
+    for (unsigned i=0; i<sizeList(edges); i++) {
+        Edge* edge = (Edge*) getListData(edges, i);
         printf("F: %s\tS: %s\tW: %.2f\n", (char*) edge->first->data, (char*) edge->second->data, edge->weight);
     }
 }
