@@ -20,26 +20,48 @@ Field* newField(Graph* graph) {
 
     Field* field = (Field*) malloc(sizeof(Field));
     if (field != NULL) {
-
         List* ants = newList();
         if (ants == NULL) {
+            free(field);
             return NULL;
         }
 
         List* vertices = graph->vertices;
-        for (uint i=0; sizeList(vertices); i++) {
+        for (uint i=0; i<sizeList(vertices); i++) {
             Vertex* location = (Vertex*) getListData(vertices, i);
             List* paths = getEdgesByVertex(graph, location);
 
             char id[31];
-            sprintf(id, "%u", i);
-            strcat("Ant", id);
+            snprintf(id, 31, "%s%u", "Ant", i);
 
             Ant* ant = newAnt(id, location, paths);
+            if (ant == NULL) {
+                return NULL;
+            }
+
+            appendList(ants, ant);
         }
+
+        field->ants = ants;
     }
 
     return field;
+}
+
+void printField(Field* field, void (*fv)(void*)) {
+    if (field == NULL) {
+        printf("[NULL Field]");
+        return;
+    }
+    printf("Field (\n");
+    printf("  Ants:\n");
+    for (uint i=0; i<sizeList(field->ants); i++) {
+        Ant* ant = (Ant*) getListData(field->ants, i);
+        printf("\t");
+        printAnt(ant, fv);
+        printf("\n");
+    }
+    printf(")");
 }
 
 #endif // FIELD_H_INCLUDED

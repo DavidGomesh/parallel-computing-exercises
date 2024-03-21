@@ -10,6 +10,8 @@
 #include "travelling-salesman/Ant.h"
 #include "travelling-salesman/PathInfo.h"
 
+#include "utils/Printters.h"
+
 typedef struct person_type {
     char name[31];
     int age;
@@ -18,21 +20,6 @@ typedef struct person_type {
 void printPerson(void* person) {
     Person* p = (Person*) person;
     printf("Person(n=%s, a=%d)", p->name, p->age);
-}
-
-void printStr(void* str) {
-    char* s = (char*) str;
-    printf("%s", s);
-}
-
-void printInt(void* integer) {
-    int* i = (int*) integer;
-    printf("%d", *i);
-}
-
-void printFloat(void* floating) {
-    float* f = (float*) floating;
-    printf("%.2f", *f);
 }
 
 void testList();
@@ -45,8 +32,8 @@ int main() {
     // testList();
     // testGraph();
     // testGetEdgesByVertex();
-    testConnectAllVertices();
-    // testField();
+    // testConnectAllVertices();
+    testField();
     return 0;
 }
 
@@ -173,8 +160,7 @@ void testField() {
 
     Field* field = newField(graph);
 
-    for (uint i=0; i<sizeList(field->ants); i++) {
-        Ant* ant = (Ant*) getListData(field->ants, i);
-        printf("ID: %s\tL: %s\n", ant->id, (char*) ant->location->data);
-    }
+    // printGraph(graph, printStr, printPathInfo);
+    // printf("\n\n");
+    printField(field, printStr);
 }
