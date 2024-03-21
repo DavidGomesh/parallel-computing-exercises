@@ -1,2 +1,6 @@
-# parallel computing exercises
- Exercises proposed in the Parallel Computing discipline at IFMA.
+# Parallel Computing Exercises
+Exercises proposed in the Parallel Computing discipline at IFMA.
+
+```
+gcc .\*.c .\adt\graph\impl\*.c .\adt\list\impl\*.c .\travelling-salesman\impl\*.c -o .\main.exe -Wall -Wextra ; .\main.exe
+```
