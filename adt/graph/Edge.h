@@ -11,4 +11,6 @@ typedef struct edge_type {
 
 Edge* newEdge(Vertex* first, Vertex* second, void* data);
 
+void printEdge(Edge* edge, void (*fv)(void*), void (*fd)(void*));
+
 #endif // EDGE_H_INCLUDED

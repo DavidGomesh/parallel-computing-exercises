@@ -21,6 +21,18 @@ Node* newNode(void* data, Node* next) {
     return node;
 }
 
+void printNode(Node* node, void (*f)(void*)) {
+    if (node == NULL) {
+        printf("[NULL Node]");
+        return;
+    }
+    printf("Node[d=");
+    f(node->data);
+    printf(",n=");
+    printNode(node->next, f);
+    printf("]");
+}
+
 struct list_type {
     Node* first;
     uint size;
@@ -78,6 +90,16 @@ bool isEmptyList(List *list) {
 
 uint sizeList(List* list) {
     return list->size;
+}
+
+void printList(List* list, void (*f)(void*)) {
+    if (list == NULL) {
+        printf("[NULL List]");
+        return;
+    }
+    printf("List(");
+    printNode(list->first, f);
+    printf(")");
 }
 
 #endif // LIST_C_INCLUDED

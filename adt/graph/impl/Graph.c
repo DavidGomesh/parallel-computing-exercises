@@ -62,4 +62,29 @@ List* getEdgesByVertex(Graph* graph, Vertex* vertex) {
     return edges;
 }
 
+void printGraph(Graph* graph, void (*fvd)(void*), void (*fed)(void*)) {
+    if (graph == NULL) {
+        printf("[NULL Graph]");
+    }
+    printf("Graph(\n");
+
+    printf("  Vertices:\n");
+    for (uint i=0; i<sizeList(graph->vertices); i++) {
+        Vertex* v = (Vertex*) getListData(graph->vertices, i);
+        printf("\t");
+        printVertex(v, fvd);
+        printf("\n");
+    }
+
+    printf("  Edges:\n");
+    for (uint i=0; i<sizeList(graph->edges); i++) {
+        Edge* e = (Edge*) getListData(graph->edges, i);
+        printf("\t");
+        printEdge(e, fvd, fed);
+        printf("\n");
+    }
+
+    printf(")");
+}
+
 #endif // GRAPH_C_INCLUDED
