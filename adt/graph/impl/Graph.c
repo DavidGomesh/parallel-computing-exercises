@@ -25,7 +25,7 @@ void addEdge(Graph* graph, Edge* edge) {
     appendList(graph->edges, edge);
 }
 
-void connectAllVertices(Graph *graph, float weights[]) {
+void connectAllVertices(Graph *graph, void* datas[]) {
     if (graph == NULL) {
         return;
     }
@@ -37,7 +37,7 @@ void connectAllVertices(Graph *graph, float weights[]) {
 
         for (uint j=i+1; j<verticesListSize; j++) {
             Vertex* second = (Vertex*) getListData(graph->vertices, j);
-            addEdge(graph, newEdge(first, second, weights[k++]));
+            addEdge(graph, newEdge(first, second, datas[k++]));
         }
     }
 }

@@ -6,9 +6,9 @@
 typedef struct edge_type {
     Vertex* first;
     Vertex* second;
-    float weight;
+    void* data;
 } Edge;
 
-Edge* newEdge(Vertex* first, Vertex* second, float weight);
+Edge* newEdge(Vertex* first, Vertex* second, void* data);
 
 #endif // EDGE_H_INCLUDED

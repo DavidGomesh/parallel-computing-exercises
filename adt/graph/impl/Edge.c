@@ -6,12 +6,12 @@
 #include "../Vertex.h"
 #include "../Edge.h"
 
-Edge* newEdge(Vertex* first, Vertex* second, float weight) {
+Edge* newEdge(Vertex* first, Vertex* second, void* data) {
     Edge* edge = (Edge*) malloc(sizeof(Edge));
     if(edge != NULL) {
         edge->first = first;
         edge->second = second;
-        edge->weight = weight;
+        edge->data = data;
     }
     return edge;
 }
