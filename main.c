@@ -10,7 +10,7 @@
 
 #include "travelling-salesman/Field.h"
 #include "travelling-salesman/Ant.h"
-#include "travelling-salesman/PathInfo.h"
+#include "travelling-salesman/Path.h"
 
 #include "utils/Printters.h"
 
@@ -160,16 +160,16 @@ void testField() {
     addVertex(graph, v4);
     addVertex(graph, v5);
 
-    connectAllVertices(graph, (void**) (PathInfo*[]) {
-        newPathInfo(22.0, 0.1), newPathInfo(50.0, 0.1), newPathInfo(48.0, 0.1), newPathInfo(29.0, 0.1),
-        newPathInfo(30.0, 0.1), newPathInfo(34.0, 0.1), newPathInfo(32.0, 0.1),
-        newPathInfo(22.0, 0.1), newPathInfo(23.0, 0.1),
-        newPathInfo(35.0, 0.1)
+    connectAllVertices(graph, (void**) (Path*[]) {
+        newPath(22.0, 0.1), newPath(50.0, 0.1), newPath(48.0, 0.1), newPath(29.0, 0.1),
+        newPath(30.0, 0.1), newPath(34.0, 0.1), newPath(32.0, 0.1),
+        newPath(22.0, 0.1), newPath(23.0, 0.1),
+        newPath(35.0, 0.1)
     });
 
     Field* field = newField(graph);
 
-    // printGraph(graph, printStr, printPathInfo);
+    // printGraph(graph, printStr, printPath);
     // printf("\n\n");
     // printField(field, printStr);
 
@@ -181,7 +181,7 @@ void testField() {
             Edge* path = (Edge*) getListData(ant->paths, j);
 
             printf("P=");
-            printEdge(path, printStr, printPathInfo);
+            printEdge(path, printStr, printPath);
             printf(",%%=%f\n", possibilities[j]);
         }
 

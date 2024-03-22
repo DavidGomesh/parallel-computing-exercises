@@ -7,8 +7,8 @@
 
 #include "../adt/graph/Vertex.h"
 #include "../adt/list/List.h"
-#include "PathInfo.h"
 #include "../adt/tuple/Tuple.h"
+#include "Path.h"
 
 #include "../utils/Printters.h"
 
@@ -37,7 +37,7 @@ float* generatePossibilities(Ant* ant) {
 
     for (uint i=0; i<pathsSize; i++) {
         Edge* edge = (Edge*) getListData(ant->paths, i);
-        PathInfo* path = (PathInfo*) edge->data;
+        Path* path = (Path*) edge->data;
 
         float Txy = 1 / path->distance;
         float TxyNxy = Txy * path->pheromone;

@@ -6,8 +6,8 @@
 #include <string.h>
 
 #include "../adt/list/List.h"
-#include "Ant.h"
 #include "../adt/graph/Graph.h"
+#include "Ant.h"
 
 typedef struct field_type {
     List* ants; // Ants list
