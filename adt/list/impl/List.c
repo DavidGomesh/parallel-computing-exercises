@@ -92,6 +92,25 @@ uint sizeList(List* list) {
     return list->size;
 }
 
+void freeList(List* list, void (*f)(void*)) {
+    if (list == NULL) {
+        return;
+    }
+
+    Node* freedNode;
+    Node* node = list->first;
+
+    while(node != NULL) {
+        freedNode = node;
+        node = node->next;
+        
+        f(freedNode->data);
+        free(freedNode);
+    }
+
+    free(list);
+}
+
 void printList(List* list, void (*f)(void*)) {
     if (list == NULL) {
         printf("[NULL List]");

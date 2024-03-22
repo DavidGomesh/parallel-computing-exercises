@@ -17,6 +17,11 @@ Edge* newEdge(Vertex* first, Vertex* second, void* data) {
     return edge;
 }
 
+void freeEdge(Edge* edge, void (*f)(void*)) {
+    f(edge->data);
+    free(edge);
+}
+
 void printEdge(Edge* edge, void (*fv)(void*), void (*fd)(void*)) {
     if (edge == NULL) {
         printf("[NULL Edge]");

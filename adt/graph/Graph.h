@@ -18,6 +18,8 @@ void addEdge(Graph* graph, Edge* edge);
 void connectAllVertices(Graph *graph, void* datas[]);
 List* getEdgesByVertex(Graph* graph, Vertex* vertex);
 
+void freeGraph(Graph* graph, void (*fvd)(void*), void (*fed)(void*));
+
 void printGraph(Graph* graph, void (*fvd)(void*), void (*fed)(void*));
 
 #endif // GRAPH_H_INCLUDED

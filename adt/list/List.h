@@ -15,6 +15,8 @@ void* getListData(List* list, uint index);
 bool isEmptyList(List *list);
 uint sizeList(List* list);
 
+void freeList(List* list, void (*f)(void*));
+
 void printList(List* list, void (*f)(void*));
 
 #endif // LIST_H_INCLUDED

@@ -14,6 +14,11 @@ Vertex* newVertex(void* data) {
     return vertex;
 }
 
+void freeVertex(Vertex* vertex, void (*f)(void*)) {
+    f(vertex->data);
+    free(vertex);
+}
+
 void printVertex(Vertex* vertex, void (*f)(void*)) {
     if(vertex == NULL) {
         printf("[NULL Vertex]");

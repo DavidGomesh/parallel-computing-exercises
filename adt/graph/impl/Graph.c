@@ -62,6 +62,26 @@ List* getEdgesByVertex(Graph* graph, Vertex* vertex) {
     return edges;
 }
 
+void freeGraph(Graph* graph, void (*fvd)(void*), void (*fed)(void*)) {
+    if (graph == NULL) {
+        return;
+    }
+
+    for (uint i=0; i<sizeList(graph->edges); i++) {
+        Edge* edge = (Edge*) getListData(graph->edges, i);
+        freeEdge(edge, fed);
+    }
+
+    for (uint i=0; i<sizeList(graph->vertices); i++) {
+        Vertex* vertex = (Vertex*) getListData(graph->vertices, i);
+        freeVertex(vertex, fvd);
+    }
+
+    free(graph->vertices);
+    free(graph->edges);
+    free(graph);
+}
+
 void printGraph(Graph* graph, void (*fvd)(void*), void (*fed)(void*)) {
     if (graph == NULL) {
         printf("[NULL Graph]");
