@@ -36,8 +36,8 @@ int main() {
     // testGraph();
     // testGetEdgesByVertex();
     // testConnectAllVertices();
-    testTulpe();
-    // testField();
+    // testTulpe();
+    testField();
     return 0;
 }
 
@@ -171,5 +171,20 @@ void testField() {
 
     // printGraph(graph, printStr, printPathInfo);
     // printf("\n\n");
-    printField(field, printStr);
+    // printField(field, printStr);
+
+    for (uint i=0; i<sizeList(field->ants); i++) {
+        Ant* ant = (Ant*) getListData(field->ants, i);
+        float* possibilities = generatePossibilities(ant);
+
+        for (uint j=0; j<sizeList(ant->paths); j++) {
+            Edge* path = (Edge*) getListData(ant->paths, j);
+
+            printf("P=");
+            printEdge(path, printStr, printPathInfo);
+            printf(",%%=%f\n", possibilities[j]);
+        }
+
+        printf("\n");
+    }
 }

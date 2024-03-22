@@ -7,6 +7,9 @@
 
 #include "../adt/graph/Vertex.h"
 #include "../adt/list/List.h"
+#include "PathInfo.h"
+#include "../adt/tuple/Tuple.h"
+
 #include "../utils/Printters.h"
 
 typedef struct ant_type {
@@ -23,6 +26,33 @@ Ant* newAnt(char id[], Vertex* location, List* paths) {
         ant->paths = paths;
     }
     return ant;
+}
+
+float* generatePossibilities(Ant* ant) {
+    uint pathsSize = sizeList(ant->paths);
+
+    float sumTxyNxy = 0.0;
+    float* TxyNxyList = (float*) malloc(pathsSize * sizeof(float));
+    float* possibilities = (float*) malloc(pathsSize * sizeof(float));
+
+    for (uint i=0; i<pathsSize; i++) {
+        Edge* edge = (Edge*) getListData(ant->paths, i);
+        PathInfo* path = (PathInfo*) edge->data;
+
+        float Txy = 1 / path->distance;
+        float TxyNxy = Txy * path->pheromone;
+
+        sumTxyNxy += TxyNxy;
+        TxyNxyList[i] = TxyNxy;
+    }
+
+    for (uint i=0; i<pathsSize; i++) {
+        possibilities[i] = TxyNxyList[i] / sumTxyNxy;
+    }
+
+    free(TxyNxyList);
+    return possibilities;
+
 }
 
 void printAnt(Ant* ant, void (*fl)(void*)) {
