@@ -6,6 +6,8 @@
 #include "adt/graph/Vertex.h"
 #include "adt/graph/Edge.h"
 
+#include "adt/tuple/Tuple.h"
+
 #include "travelling-salesman/Field.h"
 #include "travelling-salesman/Ant.h"
 #include "travelling-salesman/PathInfo.h"
@@ -26,6 +28,7 @@ void testList();
 void testGraph();
 void testGetEdgesByVertex();
 void testConnectAllVertices();
+void testTulpe();
 void testField();
 
 int main() {
@@ -33,7 +36,8 @@ int main() {
     // testGraph();
     // testGetEdgesByVertex();
     // testConnectAllVertices();
-    testField();
+    testTulpe();
+    // testField();
     return 0;
 }
 
@@ -132,6 +136,11 @@ void testConnectAllVertices() {
     });
 
     printGraph(graph, printStr, printInt);
+}
+
+void testTulpe() {
+    Tuple* tuple = newTuple("One", &(int){1});
+    printTuple(tuple, printStr, printInt);
 }
 
 void testField() {
