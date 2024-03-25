@@ -1,29 +1,13 @@
 #ifndef PATH_H_INCLUDED
 #define PATH_H_INCLUDED
 
-#include <stdio.h>
-#include <stdlib.h>
-
 typedef struct type_path {
     float distance;
     float pheromone;
 } Path;
 
-Path* newPath(float distance, float pheromone) {
-    Path* path = (Path*) malloc(sizeof(Path));
-    if (path != NULL) {
-        path->distance = distance;
-        path->pheromone = pheromone;
-    }
-    return path;
-}
+Path* newPath(float distance, float pheromone);
 
-void printPath(Path* path) {
-    if (path == NULL) {
-        printf("[NULL Path]");
-        return;
-    }
-    printf("Path(D=%.2f,P=%.2f)", path->distance, path->pheromone);
-}
+void printPath(Path* path);
 
 #endif // PATH_H_INCLUDED

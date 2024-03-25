@@ -1,21 +1,8 @@
 #ifndef PRINTTER_H_INCLUDED
 #define PRINTTER_H_INCLUDED
 
-#include <stdio.h>
-
-void printStr(void* str) {
-    char* s = (char*) str;
-    printf("%s", s);
-}
-
-void printInt(void* integer) {
-    int* i = (int*) integer;
-    printf("%d", *i);
-}
-
-void printFloat(void* floating) {
-    float* f = (float*) floating;
-    printf("%.2f", *f);
-}
+void printStr(void* str);
+void printInt(void* integer);
+void printFloat(void* floating);
 
 #endif // PRINTTER_H_INCLUDED
