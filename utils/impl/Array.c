@@ -6,12 +6,12 @@
 #include "../Array.h"
 
 void** newArray(size_t quantElem, size_t elemSize) {
-    void** array = malloc(quantElem * elemSize);
+    void** array = malloc((quantElem + 1) * elemSize);
     if (array == NULL) {
         return NULL;
     }
 
-    for (size_t i=0; i<quantElem; i++) {
+    for (size_t i=0; i<quantElem+1; i++) {
         array[i] = NULL;
     }
     return array;
