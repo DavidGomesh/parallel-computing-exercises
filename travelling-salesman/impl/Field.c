@@ -68,12 +68,11 @@ Field* newField(Graph* graph) {
 
 void generateOdds(Field* field) {
     size_t antsSize = arraySize((void**) field->ants);
-    Path** emptyPathList = (Path**) newArray(0, sizeof(Path*));
 
     for (size_t i=0; i<antsSize; i++) {
         Ant* ant = field->ants[i];
 
-        Path** paths = pathsByOrigin(field->paths, ant->location, emptyPathList);
+        Path** paths = pathsByOrigin(field->paths, ant->location);
         size_t pathsSize = arraySize((void**) paths);
 
         float sumTxyNxy = 0.0;
@@ -90,6 +89,8 @@ void generateOdds(Field* field) {
             printf("P=%f", paths[j]->odd);
             printf("\n");
         }
+        
+        printf("\n");
     }
 }
 
