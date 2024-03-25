@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include "adt/graph/Graph.h"
 #include "adt/graph/Vertex.h"
@@ -9,6 +11,7 @@
 #include "travelling-salesman/Field.h"
 #include "travelling-salesman/Ant.h"
 #include "travelling-salesman/Path.h"
+#include "travelling-salesman/Route.h"
 
 #include "utils/Array.h"
 #include "utils/Printters.h"
@@ -30,6 +33,7 @@ void testTulpe();
 void testField();
 
 int main() {
+    srand(time(NULL));
     // testList();
     // testGraph();
     // testGetEdgesByVertex();
@@ -156,9 +160,18 @@ void testField() {
 
     // printGraph(graph, printStr, printPath);
     // printf("\n\n");
-    printField(field, printStr);
-    printf("\n\n");
+    // printField(field, printStr);
+    // printf("\n\n");
     generateOdds(field);
+    Route** routes = generateRoutes(field);
+
+    for (size_t i=0; i<arraySize((void**) routes); i++) {
+        for (size_t j=0; j<arraySize((void**) routes[i]->paths); j++) {
+            printPath(routes[i]->paths[j], printStr);
+            printf("\n");
+        }
+        printf("\n\n");
+    }
 
     // for (size_t i=0; i<arraySize((void**) field->ants); i++) {
     //     Ant* ant = field->ants[i];

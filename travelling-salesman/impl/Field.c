@@ -8,6 +8,7 @@
 #include "../Field.h"
 #include "../Ant.h"
 #include "../Path.h"
+#include "../Route.h"
 
 #include "../../adt/graph/Vertex.h"
 #include "../../adt/graph/Edge.h"
@@ -73,19 +74,42 @@ void generateOdds(Field* field) {
         }
 
         for (size_t j=0; j<pathsSize; j++) {
-            printf("O=%s,D=%s,TN=%f", paths[j]->origin->data, paths[j]->destination->data, paths[j]->odd);
-            paths[j]->odd /= sumTxyNxy;
-            printf("P=%f", paths[j]->odd);
-            printf("\n");
+            paths[j]->odd = (paths[j]->odd / sumTxyNxy) * 100;
         }
-
-        printf("\n");
     }
 }
 
-// void generateRoutes(Field* field) {
+Route** generateRoutes(Field* field) {
+    Route** routes = (Route**) newArray(field->quantAnts, sizeof(Route*));
+    for (size_t i=0; i<field->quantAnts; i++) {
 
-// }
+        Vertex* currentLocation = field->ants[i]->location;
+        Vertex** excludedDestinations = (Vertex**) newArray(field->quantAnts, sizeof(Vertex*));
+
+        Path** routePaths = (Path**) newArray(field->quantAnts, sizeof(Path*));
+        for (size_t j=0; j<field->quantAnts; j++) {
+
+            if (j == field->quantAnts-1) {
+                routePaths[j] = pathByOriginAndDestination(field->paths, currentLocation, excludedDestinations[0]);
+                continue;
+            }
+
+            Path** paths = pathsByOriginExceptDestinations(field->paths, currentLocation, excludedDestinations);
+            Path* choosenPath = choosePath(paths);
+
+            currentLocation = choosenPath->destination;
+            excludedDestinations[j] = choosenPath->origin;
+            routePaths[j] = choosenPath;
+
+            free(paths);
+        }
+
+        routes[i] = (Route*) newRoute(routePaths);
+        free(excludedDestinations);
+    }
+
+    return routes;
+}
 
 void printField(Field* field, void (*fv)(void*)) {
     if (field == NULL) {

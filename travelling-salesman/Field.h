@@ -5,6 +5,7 @@
 
 #include "Ant.h"
 #include "Path.h"
+#include "Route.h"
 
 typedef struct field_type {
     Ant** ants;
@@ -16,7 +17,7 @@ typedef struct field_type {
 Field* newField(Graph* graph);
 
 void generateOdds(Field* field);
-// void generateRoutes(Field* field);
+Route** generateRoutes(Field* field);
 
 void printField(Field* field, void (*fv)(void*));
 

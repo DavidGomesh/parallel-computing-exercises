@@ -38,22 +38,51 @@ Path** pathsByOrigin(Path** paths, Vertex* origin) {
     return pathsWithOrigin;
 }
 
-Path** pathsByOriginExcept(Path** paths, Vertex* origin, Path** excludedPaths) {
+Path** pathsByOriginExceptDestinations(Path** paths, Vertex* origin, Vertex** exceptDestinations) {
     size_t pathsSize = arraySize((void**) paths);
-
     Path** pathsWithOrigin = (Path**) newArray(pathsSize, sizeof(Path*));
 
     size_t j=0;
     for (size_t i=0; i<pathsSize; i++) {
         Path* path = paths[i];
-        if (path->origin != origin || arrayContains((void**) excludedPaths, (void*) path)) {
-            continue;
+        if (path->origin == origin && !arrayContains((void**) exceptDestinations, (void*) path->destination)) {
+            pathsWithOrigin[j++] = path;
         }
-
-        pathsWithOrigin[j++] = path;
     }
 
     return pathsWithOrigin;
+}
+
+Path* pathByOriginAndDestination(Path** paths, Vertex* origin, Vertex* destination) {
+    size_t pathsSize = arraySize((void**) paths);
+    
+    for (size_t i=0; i<pathsSize; i++) {
+        if (paths[i]->origin == origin && paths[i]->destination == destination) {
+            return paths[i];
+        }
+    }
+
+    return NULL;
+}
+
+Path* choosePath(Path** paths) {
+    size_t size = arraySize((void**) paths);
+
+    int weightSum = 0;
+    for (size_t i=0; i<size; i++){
+        weightSum += paths[i]->odd;
+    }
+
+    int randNum = rand() % weightSum;
+    for (size_t i=0; i<size; i++){
+        randNum -= paths[i]->odd;
+
+        if (randNum <= 0) {
+            return paths[i];
+        }
+    }
+
+    return NULL;
 }
 
 void printPath(Path* path, void (*fv)(void*)) {
