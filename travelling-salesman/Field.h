@@ -5,12 +5,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../adt/list/List.h"
+#include "../adt/graph/Vertex.h"
+#include "../adt/graph/Edge.h"
 #include "../adt/graph/Graph.h"
+
 #include "Ant.h"
 
+#include "../utils/Array.h"
+
 typedef struct field_type {
-    List* ants; // Ants list
+    Ant** ants;
 } Field;
 
 Field* newField(Graph* graph) {
@@ -20,26 +24,26 @@ Field* newField(Graph* graph) {
 
     Field* field = (Field*) malloc(sizeof(Field));
     if (field != NULL) {
-        List* ants = newList();
+
+        Ant** ants = (Ant**) newArray(graph->quantVertices, sizeof(Ant*));
         if (ants == NULL) {
             free(field);
             return NULL;
         }
 
-        List* vertices = graph->vertices;
-        for (uint i=0; i<sizeList(vertices); i++) {
-            Vertex* location = (Vertex*) getListData(vertices, i);
-            List* paths = getEdgesByVertex(graph, location);
+        for (size_t i=0; i<graph->quantVertices; i++) {
+            Vertex* location = graph->vertices[i];
+            Edge** paths = getEdgesByVertex(graph, location);
 
             char id[31];
-            snprintf(id, 31, "%s%u", "Ant", i);
+            snprintf(id, 31, "%s%lld", "Ant", i);
 
             Ant* ant = newAnt(id, location, paths);
             if (ant == NULL) {
                 return NULL;
             }
 
-            appendList(ants, ant);
+            ants[i] = ant;
         }
 
         field->ants = ants;
@@ -55,10 +59,9 @@ void printField(Field* field, void (*fv)(void*)) {
     }
     printf("Field (\n");
     printf("  Ants:\n");
-    for (uint i=0; i<sizeList(field->ants); i++) {
-        Ant* ant = (Ant*) getListData(field->ants, i);
+    for (size_t i=0; field->ants[i]!=NULL; i++) {
         printf("\t");
-        printAnt(ant, fv);
+        printAnt(field->ants[i], fv);
         printf("\n");
     }
     printf(")");

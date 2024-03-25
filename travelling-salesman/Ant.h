@@ -6,19 +6,20 @@
 #include <string.h>
 
 #include "../adt/graph/Vertex.h"
-#include "../adt/list/List.h"
-#include "../adt/tuple/Tuple.h"
+#include "../adt/graph/Edge.h"
+
 #include "Path.h"
 
+#include "../utils/Array.h"
 #include "../utils/Printters.h"
 
 typedef struct ant_type {
     char id[31];
     Vertex* location;
-    List* paths; // Edges List
+    Edge** paths;
 } Ant;
 
-Ant* newAnt(char id[], Vertex* location, List* paths) {
+Ant* newAnt(char id[], Vertex* location, Edge** paths) {
     Ant* ant = (Ant*) malloc(sizeof(Ant));
     if (ant != NULL) {
         strcpy(ant->id, id);
@@ -29,15 +30,14 @@ Ant* newAnt(char id[], Vertex* location, List* paths) {
 }
 
 float* generatePossibilities(Ant* ant) {
-    uint pathsSize = sizeList(ant->paths);
+    size_t quantPaths = arraySize((void**) ant->paths);
 
     float sumTxyNxy = 0.0;
-    float* TxyNxyList = (float*) malloc(pathsSize * sizeof(float));
-    float* possibilities = (float*) malloc(pathsSize * sizeof(float));
+    float* TxyNxyList = (float*) malloc(quantPaths * sizeof(float));
+    float* possibilities = (float*) malloc(quantPaths * sizeof(float));
 
-    for (uint i=0; i<pathsSize; i++) {
-        Edge* edge = (Edge*) getListData(ant->paths, i);
-        Path* path = (Path*) edge->data;
+    for (size_t i=0; i<quantPaths; i++) {
+        Path* path = (Path*) ant->paths[i]->data;
 
         float Txy = 1 / path->distance;
         float TxyNxy = Txy * path->pheromone;
@@ -46,7 +46,7 @@ float* generatePossibilities(Ant* ant) {
         TxyNxyList[i] = TxyNxy;
     }
 
-    for (uint i=0; i<pathsSize; i++) {
+    for (size_t i=0; i<quantPaths; i++) {
         possibilities[i] = TxyNxyList[i] / sumTxyNxy;
     }
 

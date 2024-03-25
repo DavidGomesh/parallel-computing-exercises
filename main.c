@@ -1,17 +1,16 @@
 #include <stdio.h>
 
-#include "adt/list/List.h"
-
 #include "adt/graph/Graph.h"
 #include "adt/graph/Vertex.h"
 #include "adt/graph/Edge.h"
 
 #include "adt/tuple/Tuple.h"
 
-// #include "travelling-salesman/Field.h"
-// #include "travelling-salesman/Ant.h"
-// #include "travelling-salesman/Path.h"
+#include "travelling-salesman/Field.h"
+#include "travelling-salesman/Ant.h"
+#include "travelling-salesman/Path.h"
 
+#include "utils/Array.h"
 #include "utils/Printters.h"
 
 typedef struct person_type {
@@ -24,7 +23,6 @@ void printPerson(void* person) {
     printf("Person(n=%s, a=%d)", p->name, p->age);
 }
 
-void testList();
 void testGraph();
 void testGetEdgesByVertex();
 void testConnectAllVertices();
@@ -34,25 +32,12 @@ void testField();
 int main() {
     // testList();
     // testGraph();
-    testGetEdgesByVertex();
+    // testGetEdgesByVertex();
     // testConnectAllVertices();
     // testTulpe();
-    // testField();
+    testField();
+    printf("\n\nThe end.");
     return 0;
-}
-
-void testList() {
-    printf("LIST TESTS\n\n");
-
-    List* list = newList();
-    appendList(list, &(Person) {"David", 22});
-    appendList(list, &(Person) {"Carla", 23});
-    appendList(list, &(Person) {"Pedro", 24});
-
-    printf("PRINT LIST\n");
-    printList(list, printPerson);
-
-    printf("\n");
 }
 
 void testGraph() {
@@ -106,7 +91,7 @@ void testGetEdgesByVertex() {
     addEdge(graph, e4);
     addEdge(graph, e5);
 
-    Edge** edges = getEdgesByVertex(graph, v2);
+    Edge** edges = getEdgesByVertex(graph, v1);
     for (unsigned i=0; edges[i]!=NULL; i++) {
         Edge* edge = edges[i];
         printf("F: %s\tS: %s\tW: %.2f\n", (char*) edge->first->data, (char*) edge->second->data, *(float*) edge->data);
@@ -143,48 +128,51 @@ void testTulpe() {
     printTuple(tuple, printStr, printInt);
 }
 
-// void testField() {
-//     printf("TEST FIELD\n\n");
+void testField() {
+    printf("TEST FIELD\n\n");
 
-//     Vertex* v1 = newVertex("City00");
-//     Vertex* v2 = newVertex("City01");
-//     Vertex* v3 = newVertex("City02");
-//     Vertex* v4 = newVertex("City03");
-//     Vertex* v5 = newVertex("City04");
+    Vertex* v1 = newVertex("City00");
+    Vertex* v2 = newVertex("City01");
+    Vertex* v3 = newVertex("City02");
+    Vertex* v4 = newVertex("City03");
+    Vertex* v5 = newVertex("City04");
 
-//     Graph* graph = newGraph(5, 10);
+    Graph* graph = newGraph(5, 10);
 
-//     addVertex(graph, v1);
-//     addVertex(graph, v2);
-//     addVertex(graph, v3);
-//     addVertex(graph, v4);
-//     addVertex(graph, v5);
+    addVertex(graph, v1);
+    addVertex(graph, v2);
+    addVertex(graph, v3);
+    addVertex(graph, v4);
+    addVertex(graph, v5);
 
-//     connectAllVertices(graph, (void**) (Path*[]) {
-//         newPath(22.0, 0.1), newPath(50.0, 0.1), newPath(48.0, 0.1), newPath(29.0, 0.1),
-//         newPath(30.0, 0.1), newPath(34.0, 0.1), newPath(32.0, 0.1),
-//         newPath(22.0, 0.1), newPath(23.0, 0.1),
-//         newPath(35.0, 0.1)
-//     });
+    connectAllVertices(graph, (void**) (Path*[]) {
+        newPath(22.0, 0.1), newPath(50.0, 0.1), newPath(48.0, 0.1), newPath(29.0, 0.1),
+        newPath(30.0, 0.1), newPath(34.0, 0.1), newPath(32.0, 0.1),
+        newPath(22.0, 0.1), newPath(23.0, 0.1),
+        newPath(35.0, 0.1)
+    });
 
-//     Field* field = newField(graph);
+    Field* field = newField(graph);
 
-//     // printGraph(graph, printStr, printPath);
-//     // printf("\n\n");
-//     // printField(field, printStr);
+    // printGraph(graph, printStr, printPath);
+    // printf("\n\n");
+    printField(field, printStr);
+    printf("\n\n");
 
-//     for (uint i=0; i<sizeList(field->ants); i++) {
-//         Ant* ant = (Ant*) getListData(field->ants, i);
-//         float* possibilities = generatePossibilities(ant);
+    for (size_t i=0; i<arraySize((void**) field->ants); i++) {
+        Ant* ant = field->ants[i];
+        float* possibilities = generatePossibilities(ant);
+        printAnt(ant, printStr);
+        printf("\n");
 
-//         for (uint j=0; j<sizeList(ant->paths); j++) {
-//             Edge* path = (Edge*) getListData(ant->paths, j);
+        for (size_t j=0; j<arraySize((void**) ant->paths); j++) {
+            Edge* path = ant->paths[j];
 
-//             printf("P=");
-//             printEdge(path, printStr, printPath);
-//             printf(",%%=%f\n", possibilities[j]);
-//         }
+            printf("P=");
+            printEdge(path, printStr, (void(*)(void*)) printPath);
+            printf(",%%=%f\n", possibilities[j]);
+        }
 
-//         printf("\n");
-//     }
-// }
+        printf("\n");
+    }
+}
