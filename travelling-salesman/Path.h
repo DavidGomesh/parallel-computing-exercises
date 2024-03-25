@@ -8,9 +8,12 @@ typedef struct type_path {
     Vertex* destination;
     float distance;
     float pheromone;
+    float odd;
 } Path;
 
-Path* newPath(Vertex* origin, Vertex* destination, float distance, float pheromone);
+Path* newPath(Vertex* origin, Vertex* destination, float distance, float pheromone, float odd);
+
+Path** pathsByOrigin(Path** paths, Vertex* origin, Path** excludedPaths);
 
 void printPath(Path* path, void (*fv)(void*));
 

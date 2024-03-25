@@ -53,8 +53,8 @@ Field* newField(Graph* graph) {
     for (size_t i=0; i<graph->quantEdges; i++) {
         Edge* edge = graph->edges[i];
 
-        Path* path1 = newPath(edge->first, edge->second, edge->weight, 0.1);
-        Path* path2 = newPath(edge->second, edge->first, edge->weight, 0.1);
+        Path* path1 = newPath(edge->first, edge->second, edge->weight, 0.1, 0.0);
+        Path* path2 = newPath(edge->second, edge->first, edge->weight, 0.1, 0.0);
 
         paths[j++] = path1;
         paths[j++] = path2;
@@ -64,6 +64,33 @@ Field* newField(Graph* graph) {
     field->paths = paths;
 
     return field;
+}
+
+void generateOdds(Field* field) {
+    size_t antsSize = arraySize((void**) field->ants);
+    Path** emptyPathList = (Path**) newArray(0, sizeof(Path*));
+
+    for (size_t i=0; i<antsSize; i++) {
+        Ant* ant = field->ants[i];
+
+        Path** paths = pathsByOrigin(field->paths, ant->location, emptyPathList);
+        size_t pathsSize = arraySize((void**) paths);
+
+        float sumTxyNxy = 0.0;
+        for (size_t j=0; j<pathsSize; j++) {
+            float TxyNxy = 1 / paths[j]->distance * paths[j]->pheromone;
+            sumTxyNxy += TxyNxy;
+
+            paths[j]->odd = TxyNxy;
+        }
+
+        for (size_t j=0; j<pathsSize; j++) {
+            printf("O=%s,D=%s,TN=%f", paths[j]->origin->data, paths[j]->destination->data, paths[j]->odd);
+            paths[j]->odd /= sumTxyNxy;
+            printf("P=%f", paths[j]->odd);
+            printf("\n");
+        }
+    }
 }
 
 void printField(Field* field, void (*fv)(void*)) {

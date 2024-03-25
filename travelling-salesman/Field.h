@@ -13,6 +13,8 @@ typedef struct field_type {
 
 Field* newField(Graph* graph);
 
+void generateOdds(Field* field);
+
 void printField(Field* field, void (*fv)(void*));
 
 #endif // FIELD_H_INCLUDED

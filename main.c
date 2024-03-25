@@ -131,11 +131,11 @@ void testTulpe() {
 void testField() {
     printf("TEST FIELD\n\n");
 
-    Vertex* v1 = newVertex("City00");
-    Vertex* v2 = newVertex("City01");
-    Vertex* v3 = newVertex("City02");
-    Vertex* v4 = newVertex("City03");
-    Vertex* v5 = newVertex("City04");
+    Vertex* v1 = newVertex("City-A");
+    Vertex* v2 = newVertex("City-B");
+    Vertex* v3 = newVertex("City-C");
+    Vertex* v4 = newVertex("City-D");
+    Vertex* v5 = newVertex("City-E");
 
     Graph* graph = newGraph(5, 10);
 
@@ -158,6 +158,7 @@ void testField() {
     // printf("\n\n");
     printField(field, printStr);
     printf("\n\n");
+    generateOdds(field);
 
     // for (size_t i=0; i<arraySize((void**) field->ants); i++) {
     //     Ant* ant = field->ants[i];
