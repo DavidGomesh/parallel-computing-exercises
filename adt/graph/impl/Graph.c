@@ -7,18 +7,20 @@
 
 #include "../Graph.h"
 
+#include "../../../utils/Array.h"
+
 Graph* newGraph(size_t MAX_VERTICES, size_t MAX_EDGES) {
     Graph* graph = (Graph*) malloc(sizeof(Graph));
     if (graph == NULL) {
         return NULL;
     }
 
-    graph->vertices = (Vertex**) malloc(MAX_VERTICES * sizeof(Vertex*));
+    graph->vertices = (Vertex**) newArray(MAX_VERTICES, sizeof(Vertex*));
     if (graph->vertices == NULL) {
         return NULL;
     }
 
-    graph->edges = (Edge**) malloc(MAX_EDGES * sizeof(Edge*));
+    graph->edges = (Edge**) newArray(MAX_EDGES, sizeof(Edge*));
     if (graph->edges == NULL) {
         return NULL;
     }
@@ -46,11 +48,11 @@ void connectAllVertices(Graph *graph, void* datas[]) {
         return;
     }
 
-    uint k=0;
-    for (uint i=0; i<graph->quantVertices; i++) {
+    size_t k=0;
+    for (size_t i=0; i<graph->quantVertices; i++) {
         Vertex* first = graph->vertices[i];
 
-        for (uint j=i+1; j<graph->quantVertices; j++) {
+        for (size_t j=i+1; j<graph->quantVertices; j++) {
             Vertex* second = graph->vertices[j];
             addEdge(graph, newEdge(first, second, datas[k++]));
         }
@@ -62,13 +64,13 @@ Edge** getEdgesByVertex(Graph* graph, Vertex* vertex) {
         return NULL;
     }
 
-    Edge** edges = (Edge**) malloc(graph->MAX_EDGES * sizeof(Edge*));
+    Edge** edges = (Edge**) newArray(graph->MAX_EDGES, sizeof(Edge*));
     if (edges == NULL) {
         return NULL;
     }
 
     size_t quantEdges = 0;
-    for (uint i=0; i<graph->quantEdges; i++) {
+    for (size_t i=0; i<graph->quantEdges; i++) {
         Edge* edge = graph->edges[i];
         if (edge->first == vertex || edge->second == vertex) {
             edges[quantEdges++] = edge;
@@ -83,11 +85,11 @@ void freeGraph(Graph* graph, void (*fvd)(void*), void (*fed)(void*)) {
         return;
     }
 
-    for (uint i=0; i<graph->quantEdges; i++) {
+    for (size_t i=0; i<graph->quantEdges; i++) {
         freeEdge(graph->edges[i], fed);
     }
 
-    for (uint i=0; i<graph->quantVertices; i++) {
+    for (size_t i=0; i<graph->quantVertices; i++) {
         freeVertex(graph->vertices[i], fvd);
     }
 
@@ -103,7 +105,7 @@ void printGraph(Graph* graph, void (*fvd)(void*), void (*fed)(void*)) {
     printf("Graph(\n");
 
     printf("  Vertices:\n");
-    for (uint i=0; i<graph->quantVertices; i++) {
+    for (size_t i=0; i<graph->quantVertices; i++) {
         Vertex* v = graph->vertices[i];
         printf("\t");
         printVertex(v, fvd);
@@ -111,7 +113,7 @@ void printGraph(Graph* graph, void (*fvd)(void*), void (*fed)(void*)) {
     }
 
     printf("  Edges:\n");
-    for (uint i=0; i<graph->quantEdges; i++) {
+    for (size_t i=0; i<graph->quantEdges; i++) {
         Edge* e = graph->edges[i];
         printf("\t");
         printEdge(e, fvd, fed);

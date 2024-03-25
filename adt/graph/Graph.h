@@ -1,7 +1,6 @@
 #ifndef GRAPH_H_INCLUDED
 #define GRAPH_H_INCLUDED
 
-#include "../list/List.h"
 #include "Vertex.h"
 #include "Edge.h"
 
