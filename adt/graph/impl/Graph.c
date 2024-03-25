@@ -16,14 +16,7 @@ Graph* newGraph(size_t MAX_VERTICES, size_t MAX_EDGES) {
     }
 
     graph->vertices = (Vertex**) newArray(MAX_VERTICES, sizeof(Vertex*));
-    if (graph->vertices == NULL) {
-        return NULL;
-    }
-
     graph->edges = (Edge**) newArray(MAX_EDGES, sizeof(Edge*));
-    if (graph->edges == NULL) {
-        return NULL;
-    }
     
     graph->MAX_VERTICES = MAX_VERTICES;
     graph->MAX_EDGES = MAX_EDGES;
@@ -65,15 +58,12 @@ Edge** getEdgesByVertex(Graph* graph, Vertex* vertex) {
     }
 
     Edge** edges = (Edge**) newArray(graph->MAX_EDGES, sizeof(Edge*));
-    if (edges == NULL) {
-        return NULL;
-    }
 
-    size_t quantEdges = 0;
+    size_t j = 0;
     for (size_t i=0; i<graph->quantEdges; i++) {
         Edge* edge = graph->edges[i];
         if (edge->first == vertex || edge->second == vertex) {
-            edges[quantEdges++] = edge;
+            edges[j++] = edge;
         }
     }
 

@@ -24,9 +24,6 @@ Path** pathsByOrigin(Path** paths, Vertex* origin) {
     size_t pathsSize = arraySize((void**) paths);
 
     Path** pathsWithOrigin = (Path**) newArray(pathsSize, sizeof(Path*));
-    if (pathsByOrigin == NULL) {
-        return NULL;
-    }
 
     size_t j=0;
     for (size_t i=0; i<pathsSize; i++) {
@@ -45,9 +42,6 @@ Path** pathsByOriginExcept(Path** paths, Vertex* origin, Path** excludedPaths) {
     size_t pathsSize = arraySize((void**) paths);
 
     Path** pathsWithOrigin = (Path**) newArray(pathsSize, sizeof(Path*));
-    if (pathsByOrigin == NULL) {
-        return NULL;
-    }
 
     size_t j=0;
     for (size_t i=0; i<pathsSize; i++) {

@@ -26,9 +26,6 @@ Field* newField(Graph* graph) {
     }
 
     Ant** ants = (Ant**) newArray(graph->quantVertices, sizeof(Ant*));
-    if (ants == NULL) {
-        return NULL;
-    }
 
     for (size_t i=0; i<graph->quantVertices; i++) {
         Vertex* location = graph->vertices[i];
@@ -45,9 +42,6 @@ Field* newField(Graph* graph) {
     }
 
     Path** paths = (Path**) newArray(graph->quantVertices * (graph->quantVertices - 1), sizeof(Path*));
-    if (paths == NULL) {
-        return NULL;
-    }
 
     size_t j=0;
     for (size_t i=0; i<graph->quantEdges; i++) {
@@ -89,7 +83,7 @@ void generateOdds(Field* field) {
             printf("P=%f", paths[j]->odd);
             printf("\n");
         }
-        
+
         printf("\n");
     }
 }

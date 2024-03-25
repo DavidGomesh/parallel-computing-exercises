@@ -5,10 +5,10 @@
 
 #include "../Array.h"
 
-void** newArray(size_t quantElem, size_t elemSize) {
-    void** array = malloc((quantElem + 1) * elemSize);
+void* newArray(size_t quantElem, size_t elemSize) {
+    void** array = (void**) malloc((quantElem + 1) * elemSize);
     if (array == NULL) {
-        return NULL;
+        exit(ENOMEM);
     }
 
     for (size_t i=0; i<quantElem+1; i++) {
