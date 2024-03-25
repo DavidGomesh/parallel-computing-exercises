@@ -6,23 +6,39 @@
 #include <stdbool.h>
 
 #include "../Graph.h"
-#include "../../list/List.h"
 
-Graph* newGraph() {
+Graph* newGraph(size_t MAX_VERTICES, size_t MAX_EDGES) {
     Graph* graph = (Graph*) malloc(sizeof(Graph));
-    if (graph != NULL) {
-        graph->vertices = newList();
-        graph->edges = newList();
+    if (graph == NULL) {
+        return NULL;
     }
+
+    graph->vertices = (Vertex**) malloc(MAX_VERTICES * sizeof(Vertex*));
+    if (graph->vertices == NULL) {
+        return NULL;
+    }
+
+    graph->edges = (Edge**) malloc(MAX_EDGES * sizeof(Edge*));
+    if (graph->edges == NULL) {
+        return NULL;
+    }
+    
+    graph->MAX_VERTICES = MAX_VERTICES;
+    graph->MAX_EDGES = MAX_EDGES;
+    graph->quantVertices = 0;
+    graph->quantEdges = 0;
+
     return graph;
 }
 
 void addVertex(Graph* graph, Vertex* vertex) {
-    appendList(graph->vertices, vertex);
+    graph->vertices[graph->quantVertices] = vertex;
+    graph->quantVertices++;
 }
 
 void addEdge(Graph* graph, Edge* edge) {
-    appendList(graph->edges, edge);
+    graph->edges[graph->quantEdges] = edge;
+    graph->quantEdges++;
 }
 
 void connectAllVertices(Graph *graph, void* datas[]) {
@@ -31,31 +47,31 @@ void connectAllVertices(Graph *graph, void* datas[]) {
     }
 
     uint k=0;
-    uint verticesListSize = sizeList(graph->vertices);
-    for (uint i=0; i<verticesListSize; i++) {
-        Vertex* first = (Vertex*) getListData(graph->vertices, i);
+    for (uint i=0; i<graph->quantVertices; i++) {
+        Vertex* first = graph->vertices[i];
 
-        for (uint j=i+1; j<verticesListSize; j++) {
-            Vertex* second = (Vertex*) getListData(graph->vertices, j);
+        for (uint j=i+1; j<graph->quantVertices; j++) {
+            Vertex* second = graph->vertices[j];
             addEdge(graph, newEdge(first, second, datas[k++]));
         }
     }
 }
 
-List* getEdgesByVertex(Graph* graph, Vertex* vertex) {
+Edge** getEdgesByVertex(Graph* graph, Vertex* vertex) {
     if (graph == NULL || vertex == NULL) {
         return NULL;
     }
 
-    List* edges = newList();
+    Edge** edges = (Edge**) malloc(graph->MAX_EDGES * sizeof(Edge*));
     if (edges == NULL) {
         return NULL;
     }
 
-    for (uint i=0; i<sizeList(graph->edges); i++) {
-        Edge* edge = (Edge*) getListData(graph->edges, i);
+    size_t quantEdges = 0;
+    for (uint i=0; i<graph->quantEdges; i++) {
+        Edge* edge = graph->edges[i];
         if (edge->first == vertex || edge->second == vertex) {
-            appendList(edges, edge);
+            edges[quantEdges++] = edge;
         }
     }
 
@@ -67,14 +83,12 @@ void freeGraph(Graph* graph, void (*fvd)(void*), void (*fed)(void*)) {
         return;
     }
 
-    for (uint i=0; i<sizeList(graph->edges); i++) {
-        Edge* edge = (Edge*) getListData(graph->edges, i);
-        freeEdge(edge, fed);
+    for (uint i=0; i<graph->quantEdges; i++) {
+        freeEdge(graph->edges[i], fed);
     }
 
-    for (uint i=0; i<sizeList(graph->vertices); i++) {
-        Vertex* vertex = (Vertex*) getListData(graph->vertices, i);
-        freeVertex(vertex, fvd);
+    for (uint i=0; i<graph->quantVertices; i++) {
+        freeVertex(graph->vertices[i], fvd);
     }
 
     free(graph->vertices);
@@ -89,16 +103,16 @@ void printGraph(Graph* graph, void (*fvd)(void*), void (*fed)(void*)) {
     printf("Graph(\n");
 
     printf("  Vertices:\n");
-    for (uint i=0; i<sizeList(graph->vertices); i++) {
-        Vertex* v = (Vertex*) getListData(graph->vertices, i);
+    for (uint i=0; i<graph->quantVertices; i++) {
+        Vertex* v = graph->vertices[i];
         printf("\t");
         printVertex(v, fvd);
         printf("\n");
     }
 
     printf("  Edges:\n");
-    for (uint i=0; i<sizeList(graph->edges); i++) {
-        Edge* e = (Edge*) getListData(graph->edges, i);
+    for (uint i=0; i<graph->quantEdges; i++) {
+        Edge* e = graph->edges[i];
         printf("\t");
         printEdge(e, fvd, fed);
         printf("\n");

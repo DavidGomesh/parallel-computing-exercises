@@ -5,6 +5,8 @@
         "list.h": "c",
         "vertex.h": "c",
         "field.h": "c",
-        "edge.h": "c"
+        "edge.h": "c",
+        "tuple.h": "c",
+        "omp.h": "c"
     }
 }

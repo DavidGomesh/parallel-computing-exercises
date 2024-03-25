@@ -6,17 +6,23 @@
 #include "Edge.h"
 
 typedef struct graph_type {
-    List* vertices;
-    List* edges;
+    size_t MAX_VERTICES;
+    size_t MAX_EDGES;
+    
+    size_t quantVertices;
+    size_t quantEdges;
+
+    Vertex** vertices;
+    Edge** edges;
 } Graph;
 
-Graph* newGraph();
+Graph* newGraph(size_t MAX_VERTICES, size_t MAX_EDGES);
 
 void addVertex(Graph* graph, Vertex* vertex);
 void addEdge(Graph* graph, Edge* edge);
 
 void connectAllVertices(Graph *graph, void* datas[]);
-List* getEdgesByVertex(Graph* graph, Vertex* vertex);
+Edge** getEdgesByVertex(Graph* graph, Vertex* vertex);
 
 void freeGraph(Graph* graph, void (*fvd)(void*), void (*fed)(void*));
 
