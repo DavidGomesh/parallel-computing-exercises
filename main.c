@@ -47,9 +47,9 @@ void testGraph() {
     Vertex* v2 = newVertex("City02");
     Vertex* v3 = newVertex("City03");
 
-    Edge* e1 = newEdge(v1, v2, &(float){25.0});
-    Edge* e2 = newEdge(v1, v3, &(float){26.0});
-    Edge* e3 = newEdge(v2, v3, &(float){27.0});
+    Edge* e1 = newEdge(v1, v2, 25.0);
+    Edge* e2 = newEdge(v1, v3, 26.0);
+    Edge* e3 = newEdge(v2, v3, 27.0);
 
     Graph* graph = newGraph(3, 3);
     
@@ -61,7 +61,7 @@ void testGraph() {
     addEdge(graph, e2);
     addEdge(graph, e3);
 
-    printGraph(graph, printStr, printFloat);
+    printGraph(graph, printStr);
 }
 
 void testGetEdgesByVertex() {
@@ -71,11 +71,11 @@ void testGetEdgesByVertex() {
     Vertex* v4 = newVertex("City04");
     Vertex* v5 = newVertex("City05");
 
-    Edge* e1 = newEdge(v1, v2, &(float){25.0});
-    Edge* e2 = newEdge(v1, v3, &(float){26.0});
-    Edge* e3 = newEdge(v2, v3, &(float){27.0});
-    Edge* e4 = newEdge(v2, v4, &(float){27.0});
-    Edge* e5 = newEdge(v2, v5, &(float){27.0});
+    Edge* e1 = newEdge(v1, v2, 25.0);
+    Edge* e2 = newEdge(v1, v3, 26.0);
+    Edge* e3 = newEdge(v2, v3, 27.0);
+    Edge* e4 = newEdge(v2, v4, 27.0);
+    Edge* e5 = newEdge(v2, v5, 27.0);
 
     Graph* graph = newGraph(5, 5);
     
@@ -94,7 +94,8 @@ void testGetEdgesByVertex() {
     Edge** edges = getEdgesByVertex(graph, v1);
     for (unsigned i=0; edges[i]!=NULL; i++) {
         Edge* edge = edges[i];
-        printf("F: %s\tS: %s\tW: %.2f\n", (char*) edge->first->data, (char*) edge->second->data, *(float*) edge->data);
+        printEdge(edge, printStr);
+        // printf("F: %s\tS: %s\tW: %.2f\n", (char*) edge->first->data, (char*) edge->second->data, *(float*) edge->data);
     }
 }
 
@@ -113,14 +114,14 @@ void testConnectAllVertices() {
     addVertex(graph, v4);
     addVertex(graph, v5);
 
-    connectAllVertices(graph, (void**) (int*[]) {
-        &(int){22}, &(int){50}, &(int){48}, &(int){29},
-        &(int){30}, &(int){34}, &(int){32},
-        &(int){22}, &(int){23},
-        &(int){35}
+    connectAllVertices(graph, (float[]) {
+        22.0, 50.0, 48.0, 29.0,
+        30.0, 34.0, 32.0,
+        22.0, 23.0,
+        35.0
     });
 
-    printGraph(graph, printStr, printInt);
+    printGraph(graph, printStr);
 }
 
 void testTulpe() {
@@ -145,11 +146,11 @@ void testField() {
     addVertex(graph, v4);
     addVertex(graph, v5);
 
-    connectAllVertices(graph, (void**) (Path*[]) {
-        newPath(22.0, 0.1), newPath(50.0, 0.1), newPath(48.0, 0.1), newPath(29.0, 0.1),
-        newPath(30.0, 0.1), newPath(34.0, 0.1), newPath(32.0, 0.1),
-        newPath(22.0, 0.1), newPath(23.0, 0.1),
-        newPath(35.0, 0.1)
+    connectAllVertices(graph, (float[]) {
+        22.0, 50.0, 48.0, 29.0,
+        30.0, 34.0, 32.0,
+        22.0, 23.0,
+        35.0
     });
 
     Field* field = newField(graph);
@@ -159,20 +160,20 @@ void testField() {
     printField(field, printStr);
     printf("\n\n");
 
-    for (size_t i=0; i<arraySize((void**) field->ants); i++) {
-        Ant* ant = field->ants[i];
-        float* possibilities = generatePossibilities(ant);
-        printAnt(ant, printStr);
-        printf("\n");
+    // for (size_t i=0; i<arraySize((void**) field->ants); i++) {
+    //     Ant* ant = field->ants[i];
+    //     float* possibilities = generatePossibilities(ant);
+    //     printAnt(ant, printStr);
+    //     printf("\n");
 
-        for (size_t j=0; j<arraySize((void**) ant->paths); j++) {
-            Edge* path = ant->paths[j];
+    //     for (size_t j=0; j<arraySize((void**) ant->paths); j++) {
+    //         Edge* path = ant->paths[j];
 
-            printf("P=");
-            printEdge(path, printStr, (void(*)(void*)) printPath);
-            printf(",%%=%f\n", possibilities[j]);
-        }
+    //         printf("P=");
+    //         printEdge(path, printStr, (void(*)(void*)) printPath);
+    //         printf(",%%=%f\n", possibilities[j]);
+    //     }
 
-        printf("\n");
-    }
+    //     printf("\n");
+    // }
 }

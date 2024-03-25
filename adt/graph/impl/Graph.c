@@ -43,7 +43,7 @@ void addEdge(Graph* graph, Edge* edge) {
     graph->quantEdges++;
 }
 
-void connectAllVertices(Graph *graph, void* datas[]) {
+void connectAllVertices(Graph *graph, float weights[]) {
     if (graph == NULL) {
         return;
     }
@@ -54,7 +54,7 @@ void connectAllVertices(Graph *graph, void* datas[]) {
 
         for (size_t j=i+1; j<graph->quantVertices; j++) {
             Vertex* second = graph->vertices[j];
-            addEdge(graph, newEdge(first, second, datas[k++]));
+            addEdge(graph, newEdge(first, second, weights[k++]));
         }
     }
 }
@@ -80,13 +80,13 @@ Edge** getEdgesByVertex(Graph* graph, Vertex* vertex) {
     return edges;
 }
 
-void freeGraph(Graph* graph, void (*fvd)(void*), void (*fed)(void*)) {
+void freeGraph(Graph* graph, void (*fvd)(void*)) {
     if (graph == NULL) {
         return;
     }
 
     for (size_t i=0; i<graph->quantEdges; i++) {
-        freeEdge(graph->edges[i], fed);
+        freeEdge(graph->edges[i]);
     }
 
     for (size_t i=0; i<graph->quantVertices; i++) {
@@ -98,7 +98,7 @@ void freeGraph(Graph* graph, void (*fvd)(void*), void (*fed)(void*)) {
     free(graph);
 }
 
-void printGraph(Graph* graph, void (*fvd)(void*), void (*fed)(void*)) {
+void printGraph(Graph* graph, void (*fvd)(void*)) {
     if (graph == NULL) {
         printf("[NULL Graph]");
     }
@@ -116,7 +116,7 @@ void printGraph(Graph* graph, void (*fvd)(void*), void (*fed)(void*)) {
     for (size_t i=0; i<graph->quantEdges; i++) {
         Edge* e = graph->edges[i];
         printf("\t");
-        printEdge(e, fvd, fed);
+        printEdge(e, fvd);
         printf("\n");
     }
 

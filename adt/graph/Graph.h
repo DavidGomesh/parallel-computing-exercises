@@ -20,11 +20,11 @@ Graph* newGraph(size_t MAX_VERTICES, size_t MAX_EDGES);
 void addVertex(Graph* graph, Vertex* vertex);
 void addEdge(Graph* graph, Edge* edge);
 
-void connectAllVertices(Graph *graph, void* datas[]);
+void connectAllVertices(Graph *graph, float weights[]);
 Edge** getEdgesByVertex(Graph* graph, Vertex* vertex);
 
-void freeGraph(Graph* graph, void (*fvd)(void*), void (*fed)(void*));
+void freeGraph(Graph* graph, void (*fvd)(void*));
 
-void printGraph(Graph* graph, void (*fvd)(void*), void (*fed)(void*));
+void printGraph(Graph* graph, void (*fvd)(void*));
 
 #endif // GRAPH_H_INCLUDED

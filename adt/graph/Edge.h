@@ -6,13 +6,13 @@
 typedef struct edge_type {
     Vertex* first;
     Vertex* second;
-    void* data;
+    float weight;
 } Edge;
 
-Edge* newEdge(Vertex* first, Vertex* second, void* data);
+Edge* newEdge(Vertex* first, Vertex* second, float weight);
 
-void freeEdge(Edge* edge, void (*f)(void*));
+void freeEdge(Edge* edge);
 
-void printEdge(Edge* edge, void (*fv)(void*), void (*fd)(void*));
+void printEdge(Edge* edge, void (*fv)(void*));
 
 #endif // EDGE_H_INCLUDED

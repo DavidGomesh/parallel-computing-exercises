@@ -7,22 +7,21 @@
 #include "../Vertex.h"
 #include "../Edge.h"
 
-Edge* newEdge(Vertex* first, Vertex* second, void* data) {
+Edge* newEdge(Vertex* first, Vertex* second, float weight) {
     Edge* edge = (Edge*) malloc(sizeof(Edge));
     if(edge != NULL) {
         edge->first = first;
         edge->second = second;
-        edge->data = data;
+        edge->weight = weight;
     }
     return edge;
 }
 
-void freeEdge(Edge* edge, void (*f)(void*)) {
-    f(edge->data);
+void freeEdge(Edge* edge) {
     free(edge);
 }
 
-void printEdge(Edge* edge, void (*fv)(void*), void (*fd)(void*)) {
+void printEdge(Edge* edge, void (*fv)(void*)) {
     if (edge == NULL) {
         printf("[NULL Edge]");
         return;
@@ -31,9 +30,7 @@ void printEdge(Edge* edge, void (*fv)(void*), void (*fd)(void*)) {
     printVertex(edge->first, fv);
     printf(",S=");
     printVertex(edge->second, fv);
-    printf(",D=");
-    fd(edge->data);
-    printf("]");
+    printf(",W=%f]", edge->weight);
 }
 
 #endif // EDGE_C_INCLUDED
