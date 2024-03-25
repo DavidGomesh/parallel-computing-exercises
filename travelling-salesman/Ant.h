@@ -7,12 +7,11 @@
 typedef struct ant_type {
     char id[31];
     Vertex* location;
-    Edge** paths;
 } Ant;
 
-Ant* newAnt(char id[], Vertex* location, Edge** paths);
+Ant* newAnt(char id[], Vertex* location);
 
-float* generatePossibilities(Ant* ant);
+// float* generatePossibilities(Ant* ant);
 
 void printAnt(Ant* ant, void (*fl)(void*));
 

@@ -95,7 +95,6 @@ void testGetEdgesByVertex() {
     for (unsigned i=0; edges[i]!=NULL; i++) {
         Edge* edge = edges[i];
         printEdge(edge, printStr);
-        // printf("F: %s\tS: %s\tW: %.2f\n", (char*) edge->first->data, (char*) edge->second->data, *(float*) edge->data);
     }
 }
 
