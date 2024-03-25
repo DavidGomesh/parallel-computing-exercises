@@ -22,8 +22,10 @@ Field* newField(Graph* graph) {
     }
 
     Field* field = (Field*) newStructure(sizeof(Field));
+    field->quantAnts = graph->quantVertices;
+    field->quantPaths = graph->quantVertices * (graph->quantVertices - 1);
 
-    Ant** ants = (Ant**) newArray(graph->quantVertices, sizeof(Ant*));
+    Ant** ants = (Ant**) newArray(field->quantAnts, sizeof(Ant*));
 
     for (size_t i=0; i<graph->quantVertices; i++) {
         Vertex* location = graph->vertices[i];
@@ -36,7 +38,7 @@ Field* newField(Graph* graph) {
         ants[i] = ant;
     }
 
-    Path** paths = (Path**) newArray(graph->quantVertices * (graph->quantVertices - 1), sizeof(Path*));
+    Path** paths = (Path**) newArray(field->quantPaths, sizeof(Path*));
 
     size_t j=0;
     for (size_t i=0; i<graph->quantEdges; i++) {
@@ -56,9 +58,7 @@ Field* newField(Graph* graph) {
 }
 
 void generateOdds(Field* field) {
-    size_t antsSize = arraySize((void**) field->ants);
-
-    for (size_t i=0; i<antsSize; i++) {
+    for (size_t i=0; i<field->quantAnts; i++) {
         Ant* ant = field->ants[i];
 
         Path** paths = pathsByOrigin(field->paths, ant->location);
@@ -82,6 +82,10 @@ void generateOdds(Field* field) {
         printf("\n");
     }
 }
+
+// void generateRoutes(Field* field) {
+
+// }
 
 void printField(Field* field, void (*fv)(void*)) {
     if (field == NULL) {
