@@ -14,16 +14,14 @@
 #include "../../adt/graph/Graph.h"
 
 #include "../../utils/Array.h"
+#include "../../utils/Structure.h"
 
 Field* newField(Graph* graph) {
     if (graph == NULL) {
         return NULL;
     }
 
-    Field* field = (Field*) malloc(sizeof(Field));
-    if (field == NULL) {
-        return NULL;
-    }
+    Field* field = (Field*) newStructure(sizeof(Field));
 
     Ant** ants = (Ant**) newArray(graph->quantVertices, sizeof(Ant*));
 
@@ -34,9 +32,6 @@ Field* newField(Graph* graph) {
         snprintf(id, 31, "%s%lld", "Ant-", i);
 
         Ant* ant = newAnt(id, location);
-        if (ant == NULL) {
-            return NULL;
-        }
 
         ants[i] = ant;
     }

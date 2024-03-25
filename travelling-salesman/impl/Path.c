@@ -7,16 +7,16 @@
 #include "../Path.h"
 
 #include "../../utils/Array.h"
+#include "../../utils/Structure.h"
 
 Path* newPath(Vertex* origin, Vertex* destination, float distance, float pheromone, float odd) {
-    Path* path = (Path*) malloc(sizeof(Path));
-    if (path != NULL) {
-        path->origin = origin;
-        path->destination = destination;
-        path->distance = distance;
-        path->pheromone = pheromone;
-        path->odd = odd;
-    }
+    Path* path = (Path*) newStructure(sizeof(Path));
+    path->origin = origin;
+    path->destination = destination;
+    path->distance = distance;
+    path->pheromone = pheromone;
+    path->odd = odd;
+    
     return path;
 }
 

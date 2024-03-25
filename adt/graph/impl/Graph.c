@@ -8,12 +8,10 @@
 #include "../Graph.h"
 
 #include "../../../utils/Array.h"
+#include "../../../utils/Structure.h"
 
 Graph* newGraph(size_t MAX_VERTICES, size_t MAX_EDGES) {
-    Graph* graph = (Graph*) malloc(sizeof(Graph));
-    if (graph == NULL) {
-        return NULL;
-    }
+    Graph* graph = (Graph*) newStructure(sizeof(Graph));
 
     graph->vertices = (Vertex**) newArray(MAX_VERTICES, sizeof(Vertex*));
     graph->edges = (Edge**) newArray(MAX_EDGES, sizeof(Edge*));

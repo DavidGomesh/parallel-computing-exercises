@@ -6,12 +6,14 @@
 
 #include "../Tuple.h"
 
+#include "../../../utils/Structure.h"
+
+
 Tuple* newTuple(void* first, void* second) {
-    Tuple* tuple = (Tuple*) malloc(sizeof(Tuple));
-    if (tuple != NULL) {
-        tuple->first = first;
-        tuple->second = second;
-    }
+    Tuple* tuple = (Tuple*) newStructure(sizeof(Tuple));
+    tuple->first = first;
+    tuple->second = second;
+    
     return tuple;
 }
 

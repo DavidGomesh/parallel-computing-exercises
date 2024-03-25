@@ -7,13 +7,14 @@
 #include "../Vertex.h"
 #include "../Edge.h"
 
+#include "../../../utils/Structure.h"
+
 Edge* newEdge(Vertex* first, Vertex* second, float weight) {
-    Edge* edge = (Edge*) malloc(sizeof(Edge));
-    if(edge != NULL) {
-        edge->first = first;
-        edge->second = second;
-        edge->weight = weight;
-    }
+    Edge* edge = (Edge*) newStructure(sizeof(Edge));
+    edge->first = first;
+    edge->second = second;
+    edge->weight = weight;
+    
     return edge;
 }
 

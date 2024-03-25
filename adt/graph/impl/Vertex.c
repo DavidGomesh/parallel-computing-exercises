@@ -6,11 +6,12 @@
 
 #include "../Vertex.h"
 
+#include "../../../utils/Structure.h"
+
 Vertex* newVertex(void* data) {
-    Vertex* vertex = (Vertex*) malloc(sizeof(Vertex));
-    if (vertex != NULL) {
-        vertex->data = data;
-    }
+    Vertex* vertex = (Vertex*) newStructure(sizeof(Vertex));
+    vertex->data = data;
+    
     return vertex;
 }
 
