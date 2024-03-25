@@ -25,4 +25,14 @@ size_t arraySize(void** array) {
     return size;
 }
 
+bool arrayContains(void** array, void* data) {
+    size_t size = arraySize(array);
+    for (size_t i=0; i<size; i++) {
+        if (array[i] == data) {
+            return true;
+        }
+    }
+    return false;
+}
+
 #endif // ARRAY_C_INCLUDED
