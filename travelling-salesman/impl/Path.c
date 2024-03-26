@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "../Path.h"
 
@@ -70,7 +71,7 @@ Path* choosePath(Path** paths) {
 
     int weightSum = 0;
     for (size_t i=0; i<size; i++){
-        weightSum += paths[i]->odd;
+        weightSum += ceil(paths[i]->odd);
     }
 
     int randNum = rand() % weightSum;
