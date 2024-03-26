@@ -10,6 +10,7 @@
         "omp.h": "c",
         "ant.h": "c",
         "array.h": "c",
-        "path.h": "c"
+        "path.h": "c",
+        "graph.h": "c"
     }
 }

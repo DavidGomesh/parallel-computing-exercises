@@ -15,6 +15,7 @@
 
 #include "utils/Array.h"
 #include "utils/Printters.h"
+#include "utils/Generators.h"
 
 typedef struct person_type {
     char name[31];
@@ -31,6 +32,7 @@ void testGetEdgesByVertex();
 void testConnectAllVertices();
 void testTulpe();
 void testField();
+void testAlgorithm();
 
 int main() {
     srand(time(NULL));
@@ -39,7 +41,8 @@ int main() {
     // testGetEdgesByVertex();
     // testConnectAllVertices();
     // testTulpe();
-    testField();
+    // testField();
+    testAlgorithm();
     printf("\n\nThe end.");
     return 0;
 }
@@ -206,4 +209,46 @@ void testField() {
 
     //     printf("\n");
     // }
+}
+
+void testAlgorithm() {
+    Field* field = newField(generateCities(5, 1, 30), 0.01, 10);
+    // printField(field, printStr);
+    // Graph* graph = newGraph(5, 10);
+
+    // addVertex(graph, newVertex("City-A"));
+    // addVertex(graph, newVertex("City-B"));
+    // addVertex(graph, newVertex("City-C"));
+    // addVertex(graph, newVertex("City-D"));
+    // addVertex(graph, newVertex("City-E"));
+
+    // connectAllVertices(graph, (float[]) {
+    //     22.0, 50.0, 48.0, 29.0,
+    //     30.0, 34.0, 32.0,
+    //     22.0, 23.0,
+    //     35.0
+    // });
+
+    // Field* field = newField(graph, 0.01, 10.0);
+
+    int quant = 100000;
+
+    for (int i=0; i<quant; i++) {
+        generateOdds(field);
+        Route** routes = generateRoutes(field);
+        evaporatePheromones(field);
+        updatePheromones(field, routes);
+
+        if (i == quant - 1) {
+            for (size_t i=0; i<arraySize((void**) routes); i++) {
+                printf("ROUTE\n");
+                printf("Distance: %f\n", routes[i]->distance);
+                for (size_t j=0; j<arraySize((void**) routes[i]->paths); j++) {
+                    printPath(routes[i]->paths[j], printStr);
+                    printf("\n");
+                }
+                printf("\n");
+            }
+        }
+    }
 }
