@@ -10,18 +10,23 @@
 typedef struct field_type {
     Ant** ants;
     Path** paths;
+
+    Route** routes;
+    Route* bestRoute;
+
     size_t quantAnts;
     size_t quantPaths;
-    float evaporationRate;
+
+    float EVAPORATION_RATE;
     float UPDATE_RATE;
 } Field;
 
-Field* newField(Graph* graph, float evaporationRate, float UPDATE_RATE);
+Field* newField(Graph* graph, float EVAPORATION_RATE, float UPDATE_RATE);
 
 void generateOdds(Field* field);
-Route** generateRoutes(Field* field);
-void evaporatePheromones(Field* field);
-void updatePheromones(Field* field, Route** routes);
+void generateRoutes(Field* field);
+void updatePheromones(Field* field);
+void getBestRoute(Field* field);
 
 void printField(Field* field, void (*fv)(void*));
 

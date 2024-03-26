@@ -10,7 +10,4 @@ typedef struct type_route {
 
 Route* newRoute(Path** paths);
 
-float getTotalPheromoneDeposited(Route** routes, Path* path, float UPDATE_RATE);
-Route* getBestRoute(Route** routes);
-
 #endif // ROUTE_H_INCLUDED

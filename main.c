@@ -167,24 +167,24 @@ void testField() {
     }
     printf("\n\n");
 
-    for (int i=0; i<9000; i++) {
-        generateOdds(field);
-        Route** routes = generateRoutes(field);
-        evaporatePheromones(field);
-        updatePheromones(field, routes);
+    // for (int i=0; i<9000; i++) {
+    //     generateOdds(field);
+    //     Route** routes = generateRoutes(field);
+    //     evaporatePheromones(field);
+    //     updatePheromones(field, routes);
 
-        if (i == 9000 - 1) {
-            for (size_t i=0; i<arraySize((void**) routes); i++) {
-                printf("ROUTE\n");
-                printf("Distance: %f\n", routes[i]->distance);
-                for (size_t j=0; j<arraySize((void**) routes[i]->paths); j++) {
-                    printPath(routes[i]->paths[j], printStr);
-                    printf("\n");
-                }
-                printf("\n");
-            }
-        }
-    }
+    //     if (i == 9000 - 1) {
+    //         for (size_t i=0; i<arraySize((void**) routes); i++) {
+    //             printf("ROUTE\n");
+    //             printf("Distance: %f\n", routes[i]->distance);
+    //             for (size_t j=0; j<arraySize((void**) routes[i]->paths); j++) {
+    //                 printPath(routes[i]->paths[j], printStr);
+    //                 printf("\n");
+    //             }
+    //             printf("\n");
+    //         }
+    //     }
+    // }
 
 
     for (size_t i=0; i<field->quantPaths; i++) {
@@ -213,40 +213,39 @@ void testField() {
 
 void testAlgorithm() {
     // printField(field, printStr);
-    // Graph* graph = newGraph(5, 10);
+    Graph* graph = newGraph(5, 10);
 
-    // addVertex(graph, newVertex("A"));
-    // addVertex(graph, newVertex("B"));
-    // addVertex(graph, newVertex("C"));
-    // addVertex(graph, newVertex("D"));
-    // addVertex(graph, newVertex("E"));
+    addVertex(graph, newVertex("A"));
+    addVertex(graph, newVertex("B"));
+    addVertex(graph, newVertex("C"));
+    addVertex(graph, newVertex("D"));
+    addVertex(graph, newVertex("E"));
 
-    // connectAllVertices(graph, (float[]) {
-    //     22.0, 50.0, 48.0, 29.0,
-    //     30.0, 34.0, 32.0,
-    //     22.0, 23.0,
-    //     35.0
-    // });
+    connectAllVertices(graph, (float[]) {
+        22.0, 50.0, 48.0, 29.0,
+        30.0, 34.0, 32.0,
+        22.0, 23.0,
+        35.0
+    });
 
-    // Field* field = newField(graph, 0.01, 10.0);
+    Field* field = newField(graph, 0.01, 10.0);
 
-    Field* field = newField(generateCities(40, 1, 100), 0.01, 10);
+    // Field* field = newField(generateCities(40, 1, 100), 0.01, 10);
     int quant = 1000;
     Route* currentBest = NULL;
 
     for (int i=0; i<quant; i++) {
         generateOdds(field);
-        Route** routes = generateRoutes(field);
-        evaporatePheromones(field);
-        updatePheromones(field, routes);
-        Route* best = getBestRoute(routes);
+        generateRoutes(field);
+        updatePheromones(field);
+        getBestRoute(field);
 
-        if (i == 0 || best->distance < currentBest->distance) {
-            float difference = currentBest == NULL ? 0.0 : best->distance - currentBest->distance;
-            currentBest = best;
-            printf("\n\nBest route: I=%d,D=%.2f (%.2f)\n", i, best->distance, difference);
-            for (size_t i=0; i<arraySize((void**) best->paths); i++) {
-                printf("%s ", (char *) best->paths[i]->origin->data);
+        if (i == 0 || field->bestRoute->distance < currentBest->distance) {
+            float difference = currentBest == NULL ? 0.0 : field->bestRoute->distance - currentBest->distance;
+            currentBest = field->bestRoute;
+            printf("\n\nBest route: I=%d,D=%.2f (%.2f)\n", i, field->bestRoute->distance, difference);
+            for (size_t i=0; i<arraySize((void**) field->bestRoute->paths); i++) {
+                printf("%s ", (char *) field->bestRoute->paths[i]->origin->data);
             }
         }
 

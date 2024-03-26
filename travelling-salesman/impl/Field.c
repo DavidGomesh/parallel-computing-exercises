@@ -17,7 +17,7 @@
 #include "../../utils/Array.h"
 #include "../../utils/Structure.h"
 
-Field* newField(Graph* graph, float evaporationRate, float UPDATE_RATE) {
+Field* newField(Graph* graph, float EVAPORATION_RATE, float UPDATE_RATE) {
     if (graph == NULL) {
         return NULL;
     }
@@ -26,7 +26,7 @@ Field* newField(Graph* graph, float evaporationRate, float UPDATE_RATE) {
     field->quantAnts = graph->quantVertices;
     field->quantPaths = graph->quantVertices * (graph->quantVertices - 1);
     
-    field->evaporationRate = evaporationRate;
+    field->EVAPORATION_RATE = EVAPORATION_RATE;
     field->UPDATE_RATE = UPDATE_RATE;
 
     Ant** ants = (Ant**) newArray(field->quantAnts, sizeof(Ant*));
@@ -58,6 +58,9 @@ Field* newField(Graph* graph, float evaporationRate, float UPDATE_RATE) {
     field->ants = ants;
     field->paths = paths;
 
+    field->routes = NULL;
+    field->bestRoute = NULL;
+
     return field;
 }
 
@@ -82,7 +85,7 @@ void generateOdds(Field* field) {
     }
 }
 
-Route** generateRoutes(Field* field) {
+void generateRoutes(Field* field) {
     Route** routes = (Route**) newArray(field->quantAnts, sizeof(Route*));
     for (size_t i=0; i<field->quantAnts; i++) {
 
@@ -111,20 +114,34 @@ Route** generateRoutes(Field* field) {
         free(excludedDestinations);
     }
 
-    return routes;
+    field->routes = routes;
 }
 
-void evaporatePheromones(Field* field) {
+float getTotalPherDep(Field* field, Path* path) {
+    float totalPherDep = 0.0;
+    for (size_t i=0; i<field->quantAnts; i++) {
+        if (arrayContains((void**) field->routes[i]->paths, (void*) path)) {
+            totalPherDep += (field->UPDATE_RATE / field->routes[i]->distance);
+        }
+    }
+
+    return totalPherDep;
+}
+
+void updatePheromones(Field* field) {
     for (size_t i=0; i<field->quantPaths; i++) {
-        field->paths[i]->pheromone *= (1 - field->evaporationRate);
+        field->paths[i]->pheromone *= (1 - field->EVAPORATION_RATE);
+        field->paths[i]->pheromone += getTotalPherDep(field, field->paths[i]);
     }
 }
 
-void updatePheromones(Field* field, Route** routes) {
-    for (size_t i=0; i<field->quantPaths; i++) {
-        field->paths[i]->pheromone += getTotalPheromoneDeposited(
-            routes, field->paths[i], field->UPDATE_RATE
-        );
+void getBestRoute(Field* field) {
+    size_t totalRoutes = arraySize((void**) field->routes);
+
+    for (size_t i=0; i<totalRoutes; i++) {
+        if (i == 0 || field->routes[i]->distance < field->bestRoute->distance) {
+            field->bestRoute = field->routes[i];
+        }
     }
 }
 
