@@ -12,8 +12,8 @@ Graph* generateCities(int quant, int minDistance, int maxDistance) {
     Graph* graph = newGraph(quant, quantVert);
 
     for (int i=0; i<quant; i++) {
-        char cityName[31];
-        snprintf(cityName, 31, "%s%d", "City", i);
+        char* cityName = (char*) malloc(31 * sizeof(char));
+        snprintf(cityName, 31, "%s%d", "C", i);
         addVertex(graph, newVertex(cityName));
     }
 
