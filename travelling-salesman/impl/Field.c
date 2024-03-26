@@ -17,7 +17,7 @@
 #include "../../utils/Array.h"
 #include "../../utils/Structure.h"
 
-Field* newField(Graph* graph, float evaporationRate) {
+Field* newField(Graph* graph, float evaporationRate, float UPDATE_RATE) {
     if (graph == NULL) {
         return NULL;
     }
@@ -25,7 +25,9 @@ Field* newField(Graph* graph, float evaporationRate) {
     Field* field = (Field*) newStructure(sizeof(Field));
     field->quantAnts = graph->quantVertices;
     field->quantPaths = graph->quantVertices * (graph->quantVertices - 1);
+    
     field->evaporationRate = evaporationRate;
+    field->UPDATE_RATE = UPDATE_RATE;
 
     Ant** ants = (Ant**) newArray(field->quantAnts, sizeof(Ant*));
 
@@ -115,6 +117,14 @@ Route** generateRoutes(Field* field) {
 void evaporatePheromones(Field* field) {
     for (size_t i=0; i<field->quantPaths; i++) {
         field->paths[i]->pheromone *= (1 - field->evaporationRate);
+    }
+}
+
+void updatePheromones(Field* field, Route** routes) {
+    for (size_t i=0; i<field->quantPaths; i++) {
+        field->paths[i]->pheromone += getTotalPheromoneDeposited(
+            routes, field->paths[i], field->UPDATE_RATE
+        );
     }
 }
 

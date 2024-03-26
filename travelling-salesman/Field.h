@@ -13,13 +13,15 @@ typedef struct field_type {
     size_t quantAnts;
     size_t quantPaths;
     float evaporationRate;
+    float UPDATE_RATE;
 } Field;
 
-Field* newField(Graph* graph, float evaporationRate);
+Field* newField(Graph* graph, float evaporationRate, float UPDATE_RATE);
 
 void generateOdds(Field* field);
 Route** generateRoutes(Field* field);
 void evaporatePheromones(Field* field);
+void updatePheromones(Field* field, Route** routes);
 
 void printField(Field* field, void (*fv)(void*));
 

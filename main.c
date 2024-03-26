@@ -156,29 +156,39 @@ void testField() {
         35.0
     });
 
-    Field* field = newField(graph, 0.01);
+    Field* field = newField(graph, 0.01, 10.0);
 
-    // printGraph(graph, printStr, printPath);
-    // printf("\n\n");
-    // printField(field, printStr);
-    // printf("\n\n");
-    generateOdds(field);
-    Route** routes = generateRoutes(field);
-    evaporatePheromones(field);
-    evaporatePheromones(field);
-    evaporatePheromones(field);
-    evaporatePheromones(field);
-    evaporatePheromones(field);
-
-    for (size_t i=0; i<arraySize((void**) routes); i++) {
-        printf("ROUTE\n");
-        printf("Distance: %f\n", routes[i]->distance);
-        for (size_t j=0; j<arraySize((void**) routes[i]->paths); j++) {
-            printPath(routes[i]->paths[j], printStr);
-            printf("\n");
-        }
+    for (size_t i=0; i<field->quantPaths; i++) {
+        printPath(field->paths[i], printStr);
         printf("\n");
     }
+    printf("\n\n");
+
+    for (int i=0; i<9000; i++) {
+        generateOdds(field);
+        Route** routes = generateRoutes(field);
+        evaporatePheromones(field);
+        updatePheromones(field, routes);
+
+        if (i == 9000 - 1) {
+            for (size_t i=0; i<arraySize((void**) routes); i++) {
+                printf("ROUTE\n");
+                printf("Distance: %f\n", routes[i]->distance);
+                for (size_t j=0; j<arraySize((void**) routes[i]->paths); j++) {
+                    printPath(routes[i]->paths[j], printStr);
+                    printf("\n");
+                }
+                printf("\n");
+            }
+        }
+    }
+
+
+    for (size_t i=0; i<field->quantPaths; i++) {
+        printPath(field->paths[i], printStr);
+        printf("\n");
+    }
+    printf("\n\n");
 
     // for (size_t i=0; i<arraySize((void**) field->ants); i++) {
     //     Ant* ant = field->ants[i];
