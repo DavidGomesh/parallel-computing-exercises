@@ -212,15 +212,14 @@ void testField() {
 }
 
 void testAlgorithm() {
-    Field* field = newField(generateCities(5, 1, 30), 0.01, 10);
     // printField(field, printStr);
     // Graph* graph = newGraph(5, 10);
 
-    // addVertex(graph, newVertex("City-A"));
-    // addVertex(graph, newVertex("City-B"));
-    // addVertex(graph, newVertex("City-C"));
-    // addVertex(graph, newVertex("City-D"));
-    // addVertex(graph, newVertex("City-E"));
+    // addVertex(graph, newVertex("A"));
+    // addVertex(graph, newVertex("B"));
+    // addVertex(graph, newVertex("C"));
+    // addVertex(graph, newVertex("D"));
+    // addVertex(graph, newVertex("E"));
 
     // connectAllVertices(graph, (float[]) {
     //     22.0, 50.0, 48.0, 29.0,
@@ -231,24 +230,41 @@ void testAlgorithm() {
 
     // Field* field = newField(graph, 0.01, 10.0);
 
-    int quant = 100000;
+    Field* field = newField(generateCities(40, 1, 100), 0.01, 10);
+    int quant = 1000;
+    Route* currentBest = NULL;
 
     for (int i=0; i<quant; i++) {
         generateOdds(field);
         Route** routes = generateRoutes(field);
         evaporatePheromones(field);
         updatePheromones(field, routes);
+        Route* best = getBestRoute(routes);
 
-        if (i == quant - 1) {
-            for (size_t i=0; i<arraySize((void**) routes); i++) {
-                printf("ROUTE\n");
-                printf("Distance: %f\n", routes[i]->distance);
-                for (size_t j=0; j<arraySize((void**) routes[i]->paths); j++) {
-                    printPath(routes[i]->paths[j], printStr);
-                    printf("\n");
-                }
-                printf("\n");
+        if (i == 0 || best->distance < currentBest->distance) {
+            float difference = currentBest == NULL ? 0.0 : best->distance - currentBest->distance;
+            currentBest = best;
+            printf("\n\nBest route: I=%d,D=%.2f (%.2f)\n", i, best->distance, difference);
+            for (size_t i=0; i<arraySize((void**) best->paths); i++) {
+                printf("%s ", (char *) best->paths[i]->origin->data);
             }
         }
+
+
+
+        
+
+
+        // if (i == quant - 1) {
+        //     for (size_t i=0; i<arraySize((void**) routes); i++) {
+        //         printf("ROUTE\n");
+        //         printf("Distance: %f\n", routes[i]->distance);
+        //         for (size_t j=0; j<arraySize((void**) routes[i]->paths); j++) {
+        //             printPath(routes[i]->paths[j], printStr);
+        //             printf("\n");
+        //         }
+        //         printf("\n");
+        //     }
+        // }
     }
 }

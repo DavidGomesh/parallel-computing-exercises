@@ -36,4 +36,17 @@ float getTotalPheromoneDeposited(Route** routes, Path* path, float UPDATE_RATE) 
     return totalPherDep;
 }
 
+Route* getBestRoute(Route** routes) {
+    size_t totalRoutes = arraySize((void**) routes);
+
+    Route* better = NULL;
+    for (size_t i=0; i<totalRoutes; i++) {
+        if (i == 0 || routes[i]->distance < better->distance) {
+            better = routes[i];
+        }
+    }
+
+    return better;
+}
+
 #endif // ROUTE_C_INCLUDED
