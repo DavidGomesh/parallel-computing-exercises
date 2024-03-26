@@ -156,7 +156,7 @@ void testField() {
         35.0
     });
 
-    Field* field = newField(graph);
+    Field* field = newField(graph, 0.01);
 
     // printGraph(graph, printStr, printPath);
     // printf("\n\n");
@@ -164,13 +164,20 @@ void testField() {
     // printf("\n\n");
     generateOdds(field);
     Route** routes = generateRoutes(field);
+    evaporatePheromones(field);
+    evaporatePheromones(field);
+    evaporatePheromones(field);
+    evaporatePheromones(field);
+    evaporatePheromones(field);
 
     for (size_t i=0; i<arraySize((void**) routes); i++) {
+        printf("ROUTE\n");
+        printf("Distance: %f\n", routes[i]->distance);
         for (size_t j=0; j<arraySize((void**) routes[i]->paths); j++) {
             printPath(routes[i]->paths[j], printStr);
             printf("\n");
         }
-        printf("\n\n");
+        printf("\n");
     }
 
     // for (size_t i=0; i<arraySize((void**) field->ants); i++) {
