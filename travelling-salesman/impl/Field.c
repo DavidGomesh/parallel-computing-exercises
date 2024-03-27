@@ -11,9 +11,9 @@
 #include "../Path.h"
 #include "../Route.h"
 
-#include "../../adt/graph/Vertex.h"
-#include "../../adt/graph/Edge.h"
-#include "../../adt/graph/Graph.h"
+#include "../../graph/Vertex.h"
+#include "../../graph/Edge.h"
+#include "../../graph/Graph.h"
 
 #include "../../utils/Array.h"
 #include "../../utils/Structure.h"

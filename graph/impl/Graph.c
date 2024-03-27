@@ -7,8 +7,8 @@
 
 #include "../Graph.h"
 
-#include "../../../utils/Array.h"
-#include "../../../utils/Structure.h"
+#include "../../utils/Array.h"
+#include "../../utils/Structure.h"
 
 Graph* newGraph(size_t MAX_VERTICES, size_t MAX_EDGES) {
     Graph* graph = (Graph*) newStructure(sizeof(Graph));

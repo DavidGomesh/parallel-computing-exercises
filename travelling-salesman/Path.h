@@ -1,7 +1,7 @@
 #ifndef PATH_H_INCLUDED
 #define PATH_H_INCLUDED
 
-#include "../adt/graph/Vertex.h"
+#include "../graph/Vertex.h"
 
 typedef struct type_path {
     Vertex* origin;

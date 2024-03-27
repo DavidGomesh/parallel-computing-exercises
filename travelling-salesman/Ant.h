@@ -1,8 +1,8 @@
 #ifndef ANT_H_INCLUDED
 #define ANT_H_INCLUDED
 
-#include "../adt/graph/Vertex.h"
-#include "../adt/graph/Edge.h"
+#include "../graph/Vertex.h"
+#include "../graph/Edge.h"
 
 typedef struct ant_type {
     char id[31];

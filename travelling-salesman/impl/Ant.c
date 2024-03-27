@@ -8,8 +8,8 @@
 #include "../Ant.h"
 #include "../Path.h"
 
-#include "../../adt/graph/Vertex.h"
-#include "../../adt/graph/Edge.h"
+#include "../../graph/Vertex.h"
+#include "../../graph/Edge.h"
 
 #include "../../utils/Printters.h"
 #include "../../utils/Structure.h"

@@ -1,7 +1,7 @@
 #ifndef FIELD_H_INCLUDED
 #define FIELD_H_INCLUDED
 
-#include "../adt/graph/Graph.h"
+#include "../graph/Graph.h"
 
 #include "Ant.h"
 #include "Path.h"

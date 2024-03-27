@@ -4,7 +4,7 @@
 #include <math.h>
 #include <omp.h>
 
-#include "adt/graph/Graph.h"
+#include "graph/Graph.h"
 #include "travelling-salesman/Field.h"
 
 #include "utils/Array.h"

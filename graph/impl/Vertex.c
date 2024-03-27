@@ -6,7 +6,7 @@
 
 #include "../Vertex.h"
 
-#include "../../../utils/Structure.h"
+#include "../../utils/Structure.h"
 
 Vertex* newVertex(void* data) {
     Vertex* vertex = (Vertex*) newStructure(sizeof(Vertex));

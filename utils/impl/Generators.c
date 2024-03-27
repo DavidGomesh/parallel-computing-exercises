@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../../adt/graph/Graph.h"
-#include "../../adt/graph/Vertex.h"
+#include "../../graph/Graph.h"
+#include "../../graph/Vertex.h"
 
 Graph* generateCities(int quant, int minDistance, int maxDistance) {
     int quantVert = quant * (quant - 1) / 2;
