@@ -10,7 +10,6 @@
                 "${file}",
                 "utils\\impl\\*.c",
                 "adt\\graph\\impl\\*.c",
-                "adt\\tuple\\impl\\*.c",
                 "travelling-salesman\\impl\\*.c",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",

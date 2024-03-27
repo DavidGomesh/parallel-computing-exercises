@@ -6,7 +6,6 @@
         "vertex.h": "c",
         "field.h": "c",
         "edge.h": "c",
-        "tuple.h": "c",
         "omp.h": "c",
         "ant.h": "c",
         "array.h": "c",
