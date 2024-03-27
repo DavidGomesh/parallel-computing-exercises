@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <omp.h>
 
 #include "../Field.h"
 #include "../Ant.h"
@@ -16,6 +17,9 @@
 
 #include "../../utils/Array.h"
 #include "../../utils/Structure.h"
+
+#define INITIAL_PHEROMONE 0.01
+#define INITIAL_ODD       0.00
 
 Field* newField(Graph* graph, float EVAPORATION_RATE, float UPDATE_RATE) {
     if (graph == NULL) {
@@ -48,8 +52,8 @@ Field* newField(Graph* graph, float EVAPORATION_RATE, float UPDATE_RATE) {
     for (size_t i=0; i<graph->quantEdges; i++) {
         Edge* edge = graph->edges[i];
 
-        Path* path1 = newPath(edge->first, edge->second, edge->weight, 0.1, 0.0);
-        Path* path2 = newPath(edge->second, edge->first, edge->weight, 0.1, 0.0);
+        Path* path1 = newPath(edge->first, edge->second, edge->weight, INITIAL_PHEROMONE, INITIAL_ODD);
+        Path* path2 = newPath(edge->second, edge->first, edge->weight, INITIAL_PHEROMONE, INITIAL_ODD);
 
         paths[j++] = path1;
         paths[j++] = path2;
@@ -65,6 +69,7 @@ Field* newField(Graph* graph, float EVAPORATION_RATE, float UPDATE_RATE) {
 }
 
 void generateOdds(Field* field) {
+    #pragma omp parallel for
     for (size_t i=0; i<field->quantAnts; i++) {
         Ant* ant = field->ants[i];
 
@@ -87,6 +92,8 @@ void generateOdds(Field* field) {
 
 void generateRoutes(Field* field) {
     Route** routes = (Route**) newArray(field->quantAnts, sizeof(Route*));
+
+    #pragma omp parallel for
     for (size_t i=0; i<field->quantAnts; i++) {
 
         Vertex* currentLocation = field->ants[i]->location;
@@ -129,6 +136,7 @@ float getTotalPherDep(Field* field, Path* path) {
 }
 
 void updatePheromones(Field* field) {
+    #pragma omp parallel for
     for (size_t i=0; i<field->quantPaths; i++) {
         field->paths[i]->pheromone *= (1 - field->EVAPORATION_RATE);
         field->paths[i]->pheromone += getTotalPherDep(field, field->paths[i]);
