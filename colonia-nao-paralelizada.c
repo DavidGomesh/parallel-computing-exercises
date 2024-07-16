@@ -261,6 +261,10 @@ void gerarRotas() {
                     }
                 }
             }
+
+            if (formigas[i].rota[j] == -1) {
+                printf("* FORMIGA PERDIDA! %lf\n", num);
+            }
         }
 
         // PASSO 3 - Calcula a distancia percorrida pela formiga
