@@ -6,13 +6,13 @@
 #include <omp.h>
 
 #define CARREGAR_DISTANCIAS 1
-#define CARREGAR_FEROMONIOS 1
+#define CARREGAR_FEROMONIOS 0
 #define SALVAR_DISTANCIAS   0
 #define SALVAR_FEROMONIOS   1
 
 #define NUM_CIDADES   500
 #define NUM_FORMIGAS  600
-#define NUM_ITERACOES 10
+#define NUM_ITERACOES 1
 #define NUM_THREADS   16
 
 #define FEROMONIO_INICIAL 0.1
@@ -54,8 +54,7 @@ int main() {
     prepararDistancias();
     prepararFeromonios();
 
-    // melhorFormiga.distancia = INFINITY;
-    melhorFormiga.distancia = 1144.0;
+    melhorFormiga.distancia = INFINITY;
     printf("- MELHOR FORMIGA RESETADA!\n");
 
     double tempoInicial = omp_get_wtime();
