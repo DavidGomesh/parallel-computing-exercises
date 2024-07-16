@@ -6,13 +6,14 @@
 #include <omp.h>
 
 #define CARREGAR_DISTANCIAS 1
-#define CARREGAR_FEROMONIOS 0
-#define SALVAR_DISTANCIAS   1
-#define SALVAR_FEROMONIOS   0
+#define CARREGAR_FEROMONIOS 1
+#define SALVAR_DISTANCIAS   0
+#define SALVAR_FEROMONIOS   1
 
 #define NUM_CIDADES   500
-#define NUM_FORMIGAS  500
-#define NUM_ITERACOES 3
+#define NUM_FORMIGAS  600
+#define NUM_ITERACOES 10
+#define NUM_THREADS   16
 
 #define FEROMONIO_INICIAL 0.1
 #define RHO  0.01
@@ -39,19 +40,22 @@ void salvarFeromonios();
 void gerarRotas();
 void atualizarFeromonios();
 
-
 int main() {
     srand(time(NULL));
+
+    omp_set_num_threads(NUM_THREADS);
 
     printf("\n===== CONFIGURACOES =====\n");
     printf("- NUM_CIDADES:   %d\n", NUM_CIDADES);
     printf("- NUM_FORMIGAS:  %d\n", NUM_FORMIGAS);
-    printf("- NUM_ITERACOES: %d\n\n", NUM_ITERACOES);
+    printf("- NUM_ITERACOES: %d\n", NUM_ITERACOES);
+    printf("- NUM_THREADS:   %d\n\n", NUM_THREADS);
 
     prepararDistancias();
     prepararFeromonios();
 
-    melhorFormiga.distancia = INFINITY;
+    // melhorFormiga.distancia = INFINITY;
+    melhorFormiga.distancia = 1144.0;
     printf("- MELHOR FORMIGA RESETADA!\n");
 
     double tempoInicial = omp_get_wtime();
@@ -122,6 +126,7 @@ void salvarMatriz(char arquivo[], float matriz[NUM_CIDADES][NUM_CIDADES]) {
 
 // (OKAY) Inicializadores
 void gerarDistancias() {
+    #pragma omp parallel for collapse(2)
     for (int i=0; i < NUM_CIDADES; i++) {
         for (int j=0; j < NUM_CIDADES; j++) {
             if (i == j) {
@@ -136,6 +141,7 @@ void gerarDistancias() {
 }
 
 void inicializarFeromonios() {
+    #pragma omp parallel for collapse(2)
     for (int i=0; i < NUM_CIDADES; i++) {
         for (int j=0; j < NUM_CIDADES; j++) {
             if (i == j) {
@@ -149,6 +155,7 @@ void inicializarFeromonios() {
 }
 
 void resetarFormigas() {
+    #pragma omp parallel for
     for (int i=0; i < NUM_FORMIGAS; i++) {
         for (int j=0; j < NUM_CIDADES; j++) {
             formigas[i].rota[j] = -1;
@@ -195,6 +202,7 @@ void gerarRotas() {
 
     // PASSO 01 - Calula as probabilidades de cada caminho
     float probabilidades[NUM_CIDADES][NUM_CIDADES];
+    #pragma omp parallel for
     for (int i=0; i<NUM_CIDADES; i++) {
         float somatorioTxyNxy = 0.0;
 
@@ -217,6 +225,7 @@ void gerarRotas() {
 
     printf("- GERANDO ROTAS...\n");
     // PASSO 02 - Vai em cada formiga e gera sua rota
+    #pragma omp parallel for
     for (int i=0; i<NUM_FORMIGAS; i++) {
 
         // Escolhe uma cidade inicial
@@ -251,16 +260,20 @@ void gerarRotas() {
             }
 
             // Seleciona a proxima cidade
-            float num = (float) rand() / RAND_MAX * somaProb;
+            double num = (double) rand() / RAND_MAX * somaProb;
             for (int k=0; k<NUM_CIDADES; k++) {
                 if (probAtuais[k] > 0)  {
                     num = arredondar(num - probAtuais[k]);
 
-                    if (num <= 0) {
+                    if (num < 0.0) {
                         formigas[i].rota[j] = k;
                         break;
                     }
                 }
+            }
+
+            if (formigas[i].rota[j] == -1) {
+                printf("* FORMIGA PERDIDA!\n");
             }
         }
 
@@ -272,6 +285,7 @@ void gerarRotas() {
         }
 
         // Verifica se eh a melhor formiga
+        #pragma omp critical
         if (formigas[i].distancia < melhorFormiga.distancia) {
             melhorFormiga = formigas[i];
             printf("- NOVA ROTA ENCONTRADA: %.2f\n", melhorFormiga.distancia);
@@ -284,6 +298,7 @@ void gerarRotas() {
 // (OKAY) Atualizador de feromonios
 void atualizarFeromonios() {
     // PASSO 01 - Faz a evaporacao dos feromonios ja existentes
+    #pragma omp parallel for collapse(2)
     for (int i=0; i<NUM_CIDADES; i++) {
         for (int j = 0; j < NUM_CIDADES; j++) {
             feromonios[i][j] *= (1.0 - RHO);
@@ -291,18 +306,25 @@ void atualizarFeromonios() {
     }
 
     // PASSO 02 - Atualiza os feromonios deixado pelas formigas
+    #pragma omp parallel for
     for (int i=0; i<NUM_FORMIGAS; i++) {
         int ultCidade = formigas[i].rota[NUM_CIDADES-1];
         int priCidade = formigas[i].rota[0];
 
+        #pragma omp critical
         feromonios[ultCidade][priCidade] += Q / formigas[i].distancia;
+
+        #pragma omp critical
         feromonios[priCidade][ultCidade] = feromonios[ultCidade][priCidade];
 
         for (int j=0; j<NUM_CIDADES-1; j++) {
             int cidadeAtual = formigas[i].rota[j];
             int proxCidade = formigas[i].rota[j+1];
 
+            #pragma omp critical
             feromonios[cidadeAtual][proxCidade] += Q / formigas[i].distancia;
+            
+            #pragma omp critical
             feromonios[proxCidade][cidadeAtual] = feromonios[cidadeAtual][proxCidade];
         }
     }
