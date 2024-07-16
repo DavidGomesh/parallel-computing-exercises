@@ -3,56 +3,125 @@
 #include <stdbool.h>
 #include <math.h>
 #include <time.h>
+#include <omp.h>
 
-#define NUM_CIDADES  500
-#define NUM_FORMIGAS 100
-#define NUM_ITERACOES 10
+#define CARREGAR_DISTANCIAS 1
+#define CARREGAR_FEROMONIOS 0
+#define SALVAR_DISTANCIAS   1
+#define SALVAR_FEROMONIOS   0
 
+#define NUM_CIDADES   500
+#define NUM_FORMIGAS  500
+#define NUM_ITERACOES 3
+
+#define FEROMONIO_INICIAL 0.1
 #define RHO  0.01
 #define Q    10
 
-typedef struct {
-    int caminho[NUM_CIDADES];
-    double distancia;
+typedef struct tipo_formiga {
+    int rota[NUM_CIDADES];
+    float distancia;
 } Formiga;
 
 Formiga formigas[NUM_FORMIGAS];
 Formiga melhorFormiga;
 
-double distancias[NUM_CIDADES][NUM_CIDADES];
-double feromonios[NUM_CIDADES][NUM_CIDADES];
+float distancias[NUM_CIDADES][NUM_CIDADES];
+float feromonios[NUM_CIDADES][NUM_CIDADES];
 
-void inicializarDistancias();
-void inicializarFeromonios();
-void inicializarFormigas();
-void gerarCaminhos();
+float arredondar(float num);
+
+void prepararDistancias();
+void prepararFeromonios();
+void salvarDistancias();
+void salvarFeromonios();
+
+void gerarRotas();
 void atualizarFeromonios();
+
 
 int main() {
     srand(time(NULL));
 
-    inicializarDistancias();
-    inicializarFeromonios();
-    melhorFormiga.distancia = INFINITY;
+    printf("\n===== CONFIGURACOES =====\n");
+    printf("- NUM_CIDADES:   %d\n", NUM_CIDADES);
+    printf("- NUM_FORMIGAS:  %d\n", NUM_FORMIGAS);
+    printf("- NUM_ITERACOES: %d\n\n", NUM_ITERACOES);
 
+    prepararDistancias();
+    prepararFeromonios();
+
+    melhorFormiga.distancia = INFINITY;
+    printf("- MELHOR FORMIGA RESETADA!\n");
+
+    double tempoInicial = omp_get_wtime();
+
+    printf("\n");
     for (int i=0; i<NUM_ITERACOES; i++) {
-        inicializarFormigas();
-        gerarCaminhos();
+        double tempoInicialIteracao = omp_get_wtime();
+
+        printf("ITERACAO: %d\n", i+1);
+        gerarRotas();
         atualizarFeromonios();
 
-        printf("\n");
-        printf("\nIteracao: %d", i+1);
-        printf("\nMelhor caminho: %.2f\n", melhorFormiga.distancia);
-        for (int j=0; j<NUM_CIDADES; j++) {
-            printf("%d ", melhorFormiga.caminho[j]);
-        }
+        double tempoFinalIteracao = omp_get_wtime();
+        
+        printf("- MELHOR ROTA: %.2f\n", melhorFormiga.distancia);
+        printf("- TEMPO DA ITERACAO: %.3f SEGUNDOS\n\n", tempoFinalIteracao - tempoInicialIteracao);
     }
 
+    double tempoFinal = omp_get_wtime();
+    printf("MELHOR ROTA ENCONTRADA: %.2f\n", melhorFormiga.distancia);
+    printf("TEMPO TOTAL DE EXECUCAO: %.3f SEGUNDOS\n", tempoFinal - tempoInicial);
+
+    salvarDistancias();
+    salvarFeromonios();
+
+    printf("\n===== FIM =====\n\n");
     return 0;
 }
 
-// Okay
-void inicializarDistancias() {
+// (OKAY) Funcao de arredondar numeros
+float arredondar(float num) {
+    return roundf(num * 1000) / 1000;
+}
+
+// Manipuladores de arquivos
+void carregarMatriz(char arquivo[], float matriz[NUM_CIDADES][NUM_CIDADES]) {
+    FILE *file = fopen(arquivo, "rb");
+    if (file == NULL) {
+        printf("NÃO FOI POSSÍVEL ABRIR O ARQUIVO '%s'\n", arquivo);
+        exit(-1);
+    }
+
+    for (int i = 0; i < NUM_CIDADES; i++) {
+        for (int j = 0; j < NUM_CIDADES; j++) {
+            fscanf(file, "%f", &matriz[i][j]);
+        }
+    }
+
+    fclose(file);
+}
+
+void salvarMatriz(char arquivo[], float matriz[NUM_CIDADES][NUM_CIDADES]) {
+    FILE *file = fopen(arquivo, "wb");
+    if (file == NULL) {
+        printf("NÃO FOI POSSÍVEL ABRIR O ARQUIVO '%s'\n", arquivo);
+        exit(-1);
+    }
+
+    for (int i = 0; i < NUM_CIDADES; i++) {
+        for (int j = 0; j < NUM_CIDADES; j++) {
+            fprintf(file, "%.2f ", matriz[i][j]);
+        }
+        fprintf(file, "\n");
+    }
+
+    fclose(file);
+}
+
+// (OKAY) Inicializadores
+void gerarDistancias() {
     for (int i=0; i < NUM_CIDADES; i++) {
         for (int j=0; j < NUM_CIDADES; j++) {
             if (i == j) {
@@ -63,34 +132,71 @@ void inicializarDistancias() {
             }
         }
     }
+    printf("- DISTANCIAS GERADAS!\n");
 }
 
-// Okay
 void inicializarFeromonios() {
     for (int i=0; i < NUM_CIDADES; i++) {
         for (int j=0; j < NUM_CIDADES; j++) {
-            feromonios[i][j] = 0.1;
+            if (i == j) {
+                feromonios[i][j] = 0.0;
+            } else {
+                feromonios[i][j] = 0.1;
+            }
         }
     }
+    printf("- FEROMONIOS INICIALIZADOS!\n");
 }
 
-// Okay
-void inicializarFormigas() {
+void resetarFormigas() {
     for (int i=0; i < NUM_FORMIGAS; i++) {
         for (int j=0; j < NUM_CIDADES; j++) {
-            formigas[i].caminho[j] = -1;
+            formigas[i].rota[j] = -1;
         }
         formigas[i].distancia = 0.0;
     }
+    printf("- FORMIGAS RESETADAS!\n");
 }
 
-// Okay
-void gerarCaminhos() {
+// Manipuladores de dados
+void prepararDistancias() {
+    if (CARREGAR_DISTANCIAS) {
+        carregarMatriz("distancias.txt", distancias);
+    } else {
+        gerarDistancias();
+    }
+}
+
+void prepararFeromonios() {
+    if (CARREGAR_FEROMONIOS) {
+        carregarMatriz("feromonios.txt", feromonios);
+    } else {
+        inicializarFeromonios();
+    }
+}
+
+void salvarDistancias() {
+    if (SALVAR_DISTANCIAS) {
+        salvarMatriz("distancias.txt", distancias);
+    }
+}
+
+void salvarFeromonios() {
+    if (SALVAR_FEROMONIOS) {
+        salvarMatriz("feromonios.txt", feromonios);
+    }
+}
+
+// (OKAY) Gerador de rotas
+void gerarRotas() {
+
+    // Reseta todas as formigas
+    resetarFormigas();
 
     // PASSO 01 - Calula as probabilidades de cada caminho
-    double probabilidades[NUM_CIDADES][NUM_CIDADES];
+    float probabilidades[NUM_CIDADES][NUM_CIDADES];
     for (int i=0; i<NUM_CIDADES; i++) {
-        double somatorioTxyNxy = 0.0;
+        float somatorioTxyNxy = 0.0;
 
         // Calcula Txy * Nxy para todos os caminhos
         for (int j=0; j<NUM_CIDADES; j++) {
@@ -104,22 +210,24 @@ void gerarCaminhos() {
 
         // Calcula a probabilidade de cada caminho
         for (int j=0; j<NUM_CIDADES; j++) {
-            probabilidades[i][j] = (probabilidades[i][j] / somatorioTxyNxy) * 100;
+            probabilidades[i][j] = arredondar((probabilidades[i][j] / somatorioTxyNxy) * 100);
         }
     }
+    printf("- PROBABILIDADES CALCULADAS!\n");
 
-    // PASSO 02 - Vai em cada formiga e gera o seu caminho
+    printf("- GERANDO ROTAS...\n");
+    // PASSO 02 - Vai em cada formiga e gera sua rota
     for (int i=0; i<NUM_FORMIGAS; i++) {
 
         // Escolhe uma cidade inicial
-        formigas[i].caminho[0] = rand() % NUM_CIDADES;
+        formigas[i].rota[0] = rand() % NUM_CIDADES;
 
         // Gera o percurso da formiga pelo restante das cidades
         for (int j=1; j<NUM_CIDADES; j++) {
-            int cidadeAtual = formigas[i].caminho[j-1];
+            int cidadeAtual = formigas[i].rota[j-1];
 
             // Seleciona as probabilidades das cidade ainda não visitadas
-            double probAtuais[NUM_CIDADES], somaProb=0.0;
+            float probAtuais[NUM_CIDADES], somaProb=0.0;
             for (int k=0; k<NUM_CIDADES; k++) {
                 if (k == cidadeAtual) {
                     probAtuais[k] = 0;
@@ -129,7 +237,7 @@ void gerarCaminhos() {
                 // Verifica se a cidade ja foi visitada
                 bool cidadeVisitada = false;
                 for (int x=0; x<NUM_CIDADES; x++) {
-                    if (formigas[i].caminho[x] == k) {
+                    if (formigas[i].rota[x] == k) {
                         cidadeVisitada = true;
                         probAtuais[k] = 0;
                         break;
@@ -143,13 +251,13 @@ void gerarCaminhos() {
             }
 
             // Seleciona a proxima cidade
-            double num = (double) rand() / RAND_MAX * somaProb;
+            float num = (float) rand() / RAND_MAX * somaProb;
             for (int k=0; k<NUM_CIDADES; k++) {
                 if (probAtuais[k] > 0)  {
-                    num -= probAtuais[k];
+                    num = arredondar(num - probAtuais[k]);
 
                     if (num <= 0) {
-                        formigas[i].caminho[j] = k;
+                        formigas[i].rota[j] = k;
                         break;
                     }
                 }
@@ -158,19 +266,22 @@ void gerarCaminhos() {
 
         // PASSO 3 - Calcula a distancia percorrida pela formiga
         formigas[i].distancia = 0;
-        formigas[i].distancia += distancias[formigas[i].caminho[NUM_CIDADES-1]][formigas[i].caminho[0]];
+        formigas[i].distancia += distancias[formigas[i].rota[NUM_CIDADES-1]][formigas[i].rota[0]];
         for (int j=0; j<NUM_CIDADES-1; j++) {
-            formigas[i].distancia += distancias[formigas[i].caminho[j]][formigas[i].caminho[j+1]];
+            formigas[i].distancia += distancias[formigas[i].rota[j]][formigas[i].rota[j+1]];
         }
 
         // Verifica se eh a melhor formiga
         if (formigas[i].distancia < melhorFormiga.distancia) {
             melhorFormiga = formigas[i];
+            printf("- NOVA ROTA ENCONTRADA: %.2f\n", melhorFormiga.distancia);
         }
     }
+
+    printf("- ROTAS GERADAS!\n");
 }
 
-// Okay
+// (OKAY) Atualizador de feromonios
 void atualizarFeromonios() {
     // PASSO 01 - Faz a evaporacao dos feromonios ja existentes
     for (int i=0; i<NUM_CIDADES; i++) {
@@ -181,18 +292,19 @@ void atualizarFeromonios() {
 
     // PASSO 02 - Atualiza os feromonios deixado pelas formigas
     for (int i=0; i<NUM_FORMIGAS; i++) {
-        int ultCidade = formigas[i].caminho[NUM_CIDADES-1];
-        int priCidade = formigas[i].caminho[0];
+        int ultCidade = formigas[i].rota[NUM_CIDADES-1];
+        int priCidade = formigas[i].rota[0];
 
         feromonios[ultCidade][priCidade] += Q / formigas[i].distancia;
         feromonios[priCidade][ultCidade] = feromonios[ultCidade][priCidade];
 
         for (int j=0; j<NUM_CIDADES-1; j++) {
-            int cidadeAtual = formigas[i].caminho[j];
-            int proxCidade = formigas[i].caminho[j+1];
+            int cidadeAtual = formigas[i].rota[j];
+            int proxCidade = formigas[i].rota[j+1];
 
             feromonios[cidadeAtual][proxCidade] += Q / formigas[i].distancia;
             feromonios[proxCidade][cidadeAtual] = feromonios[cidadeAtual][proxCidade];
         }
     }
+    printf("- FEROMONIOS ATUALIZADOS!\n");
 }
