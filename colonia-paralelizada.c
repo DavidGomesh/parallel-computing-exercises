@@ -5,14 +5,17 @@
 #include <time.h>
 #include <omp.h>
 
-#define CARREGAR_DISTANCIAS 1
-#define CARREGAR_FEROMONIOS 0
-#define SALVAR_DISTANCIAS   0
-#define SALVAR_FEROMONIOS   1
+#define CARREGAR_DISTANCIAS  0
+#define CARREGAR_FEROMONIOS  0
+#define CARREGAR_MELHOR_ROTA 0
+
+#define SALVAR_DISTANCIAS    1
+#define SALVAR_FEROMONIOS    1
+#define SALVAR_MELHOR_ROTA   1
 
 #define NUM_CIDADES   500
-#define NUM_FORMIGAS  600
-#define NUM_ITERACOES 1
+#define NUM_FORMIGAS  400
+#define NUM_ITERACOES 10
 #define NUM_THREADS   16
 
 #define FEROMONIO_INICIAL 0.1
@@ -34,14 +37,17 @@ float arredondar(float num);
 
 void prepararDistancias();
 void prepararFeromonios();
+void prepararMelhorFormiga();
+
 void salvarDistancias();
 void salvarFeromonios();
+void salvarMelhorFormiga();
 
 void gerarRotas();
 void atualizarFeromonios();
 
 int main() {
-    srand(time(NULL));
+    srand(10);
 
     omp_set_num_threads(NUM_THREADS);
 
@@ -53,9 +59,7 @@ int main() {
 
     prepararDistancias();
     prepararFeromonios();
-
-    melhorFormiga.distancia = INFINITY;
-    printf("- MELHOR FORMIGA RESETADA!\n");
+    prepararMelhorFormiga();
 
     double tempoInicial = omp_get_wtime();
 
@@ -79,6 +83,7 @@ int main() {
 
     salvarDistancias();
     salvarFeromonios();
+    salvarMelhorFormiga();
 
     printf("\n===== FIM =====\n\n");
     return 0;
@@ -181,6 +186,26 @@ void prepararFeromonios() {
     }
 }
 
+void prepararMelhorFormiga() {
+    if (CARREGAR_MELHOR_ROTA) {
+        FILE *file = fopen("melhor-rota.txt", "rb");
+        if (file == NULL) {
+            printf("NÃO FOI POSSÍVEL ABRIR O ARQUIVO '%s'\n", "melhor-rota.txt");
+            exit(-1);
+        }
+
+        fscanf(file, "%f", &melhorFormiga.distancia);
+        for (int i=0; i<NUM_CIDADES; i++) {
+            fscanf(file, "%d", &melhorFormiga.rota[i]);
+        }
+
+        fclose(file);
+    } else {
+        melhorFormiga.distancia = INFINITY;
+        printf("- MELHOR FORMIGA RESETADA!\n");
+    }
+}
+
 void salvarDistancias() {
     if (SALVAR_DISTANCIAS) {
         salvarMatriz("distancias.txt", distancias);
@@ -190,6 +215,23 @@ void salvarDistancias() {
 void salvarFeromonios() {
     if (SALVAR_FEROMONIOS) {
         salvarMatriz("feromonios.txt", feromonios);
+    }
+}
+
+void salvarMelhorFormiga() {
+    if (SALVAR_MELHOR_ROTA) {
+        FILE *file = fopen("melhor-rota.txt", "wb");
+        if (file == NULL) {
+            printf("NÃO FOI POSSÍVEL ABRIR O ARQUIVO '%s'\n", "melhor-rota.txt");
+            exit(-1);
+        }
+
+        fprintf(file, "%.2f\n", melhorFormiga.distancia);
+        for (int i=0; i<NUM_CIDADES; i++) {
+            fprintf(file, "%d ", melhorFormiga.rota[i]);
+        }
+
+        fclose(file);
     }
 }
 
@@ -273,6 +315,7 @@ void gerarRotas() {
 
             if (formigas[i].rota[j] == -1) {
                 printf("* FORMIGA PERDIDA!\n");
+                exit(-1);
             }
         }
 

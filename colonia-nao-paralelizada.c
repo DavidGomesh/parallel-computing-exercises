@@ -5,14 +5,14 @@
 #include <time.h>
 #include <omp.h>
 
-#define CARREGAR_DISTANCIAS 1
+#define CARREGAR_DISTANCIAS 0
 #define CARREGAR_FEROMONIOS 0
 #define SALVAR_DISTANCIAS   1
-#define SALVAR_FEROMONIOS   0
+#define SALVAR_FEROMONIOS   1
 
 #define NUM_CIDADES   500
-#define NUM_FORMIGAS  500
-#define NUM_ITERACOES 3
+#define NUM_FORMIGAS  400
+#define NUM_ITERACOES 10
 
 #define FEROMONIO_INICIAL 0.1
 #define RHO  0.01
@@ -40,7 +40,7 @@ void gerarRotas();
 void atualizarFeromonios();
 
 int main() {
-    srand(time(NULL));
+    srand(10);
 
     printf("\n===== CONFIGURACOES =====\n");
     printf("- NUM_CIDADES:   %d\n", NUM_CIDADES);
@@ -264,6 +264,7 @@ void gerarRotas() {
 
             if (formigas[i].rota[j] == -1) {
                 printf("* FORMIGA PERDIDA! %lf\n", num);
+                exit(-1);
             }
         }
 
