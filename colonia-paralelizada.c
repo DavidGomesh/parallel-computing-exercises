@@ -47,7 +47,7 @@ void gerarRotas();
 void atualizarFeromonios();
 
 int main() {
-    srand(10);
+    srand(time(NULL));
 
     omp_set_num_threads(NUM_THREADS);
 
@@ -130,7 +130,6 @@ void salvarMatriz(char arquivo[], float matriz[NUM_CIDADES][NUM_CIDADES]) {
 
 // (OKAY) Inicializadores
 void gerarDistancias() {
-    #pragma omp parallel for collapse(2)
     for (int i=0; i < NUM_CIDADES; i++) {
         for (int j=0; j < NUM_CIDADES; j++) {
             if (i == j) {
@@ -145,7 +144,6 @@ void gerarDistancias() {
 }
 
 void inicializarFeromonios() {
-    #pragma omp parallel for collapse(2)
     for (int i=0; i < NUM_CIDADES; i++) {
         for (int j=0; j < NUM_CIDADES; j++) {
             if (i == j) {
@@ -306,16 +304,11 @@ void gerarRotas() {
                 if (probAtuais[k] > 0)  {
                     num = arredondar(num - probAtuais[k]);
 
-                    if (num < 0.0) {
+                    if (num <= 0.0) {
                         formigas[i].rota[j] = k;
                         break;
                     }
                 }
-            }
-
-            if (formigas[i].rota[j] == -1) {
-                printf("* FORMIGA PERDIDA!\n");
-                exit(-1);
             }
         }
 
